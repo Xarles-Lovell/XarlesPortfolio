@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>嫌疑人主动现身 — Design Criminal Gazette</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Special+Elite&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:        #7A5A44;
+      --paper:     #F4E8DC;
+      --paper-alt: #EAD8C4;
+      --ink:       #1E1010;
+      --ink-light: #5a3030;
+      --red:       #A01E1E;
+      --shadow:    rgba(20,8,8,0.45);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 8% 8%,  rgba(90,48,28,0.45) 0%, transparent 45%),
+        radial-gradient(ellipse at 92% 92%, rgba(40,16,8,0.50) 0%, transparent 45%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+      font-family: 'Special Elite', serif;
+      min-height: 100vh;
+      padding: 36px 28px 72px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 返回 */
+    .back-link {
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--paper-alt);
+      text-decoration: none;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+      margin-bottom: 20px;
+      animation: fadeDown 0.5s ease both;
+    }
+    .back-link:hover { opacity: 1; }
+    .back-link svg { width: 13px; height: 13px; }
+
+    /* ===== 堆叠纸张 ===== */
+    .dossier-stack {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+    .dossier-stack::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 10px; bottom: -10px;
+      background-color: #e0c9b4;
+      transform: rotate(2.4deg);
+      box-shadow: 2px 6px 20px rgba(20,8,8,0.3);
+      z-index: 0;
+    }
+    .dossier-stack::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 14px; bottom: -8px;
+      background-color: #ead5bc;
+      transform: rotate(-1.8deg);
+      box-shadow: 1px 4px 14px rgba(20,8,8,0.22);
+      z-index: 0;
+    }
+
+    /* ===== 报纸主体 ===== */
+    .newspaper {
+      position: relative;
+      z-index: 2;
+      background-color: var(--paper);
+      background-image:
+        radial-gradient(ellipse at 0% 0%,    rgba(38,23,23,0.10) 0%, transparent 32%),
+        radial-gradient(ellipse at 100% 100%, rgba(38,23,23,0.12) 0%, transparent 32%),
+        radial-gradient(ellipse at 100% 0%,   rgba(38,23,23,0.07) 0%, transparent 25%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.12) inset,
+        0 12px 40px rgba(20,8,8,0.38),
+        0 4px 10px rgba(0,0,0,0.22);
+    }
+
+    /* ===== 报头 ===== */
+    .paper-masthead {
+      padding: 24px 44px 18px;
+      border-bottom: 4px double rgba(38,23,23,0.55);
+      text-align: center;
+    }
+    .masthead-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--ink-light);
+      opacity: 0.5;
+      text-transform: uppercase;
+    }
+    .masthead-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 5vw, 42px);
+      font-weight: 900;
+      color: var(--ink);
+      letter-spacing: 0.05em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .masthead-name span { color: var(--red); }
+    .masthead-sub {
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+
+    /* ===== 版面分隔线 ===== */
+    .section-rule {
+      border: none;
+      border-top: 1.5px solid rgba(38,23,23,0.3);
+      margin: 0;
+    }
+    .section-rule.thin {
+      border-top-width: 1px;
+      border-color: rgba(38,23,23,0.15);
+    }
+
+    /* ===== 主要内容区 ===== */
+    .paper-body { padding: 0 44px; }
+
+    /* ===== 栏目标签 ===== */
+    .column-tag {
+      display: inline-block;
+      font-size: 8px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--paper);
+      background: var(--ink);
+      padding: 3px 8px;
+      margin: 16px 0 14px;
+    }
+    .column-tag.red { background: var(--red); }
+
+    /* ===== 主标题 ===== */
+    .headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 4vw, 34px);
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1.18;
+      margin-bottom: 10px;
+    }
+    .headline em {
+      font-style: italic;
+      color: var(--red);
+    }
+
+    /* 副标题 */
+    .subheadline {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--ink-light);
+      line-height: 1.5;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(38,23,23,0.15);
+    }
+
+    /* ===== 报纸两栏布局 ===== */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      padding: 16px 0 24px;
+    }
+    .two-col .col-divider {
+      border-left: 1px solid rgba(38,23,23,0.15);
+    }
+
+    /* 正文段落 */
+    .article-text {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.9;
+    }
+    .article-text p + p { margin-top: 12px; }
+
+    /* 首字下沉 */
+    .article-text p:first-child::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 44px;
+      font-weight: 900;
+      float: left;
+      line-height: 0.8;
+      margin-right: 6px;
+      margin-top: 6px;
+      color: var(--ink);
+    }
+
+    /* ===== 联系方式框（报纸广告/公告风格）===== */
+    .contact-box {
+      border: 2px solid var(--ink);
+      padding: 18px 20px;
+      margin: 4px 0 16px;
+      position: relative;
+      text-align: center;
+    }
+    /* 四角小方块装饰 */
+    .contact-box::before,
+    .contact-box::after {
+      content: '■';
+      position: absolute;
+      font-size: 6px;
+      color: var(--ink);
+      opacity: 0.4;
+    }
+    .contact-box::before { top: 4px; left: 4px; }
+    .contact-box::after  { bottom: 4px; right: 4px; }
+
+    .contact-box .box-title {
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      opacity: 0.55;
+      margin-bottom: 12px;
+    }
+    .contact-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(38,23,23,0.12);
+    }
+    .contact-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .contact-key {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+    .contact-val {
+      font-family: 'Special Elite', serif;
+      font-size: 13px;
+      color: var(--ink);
+    }
+    .contact-val a {
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(38,23,23,0.25);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .contact-val a:hover { color: var(--red); border-color: var(--red); }
+
+    /* ===== 引语块（报纸引用框）===== */
+    .pull-quote {
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      padding: 14px 12px;
+      margin: 16px 0;
+      text-align: center;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.55;
+    }
+    .pull-quote cite {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      opacity: 0.45;
+      margin-top: 8px;
+      font-style: normal;
+    }
+
+    /* ===== 报纸底部 ===== */
+    .paper-footer {
+      padding: 14px 44px 22px;
+      border-top: 3px double rgba(38,23,23,0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-light);
+      text-decoration: none;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+    .footer-nav:hover { opacity: 0.85; }
+    .footer-nav svg { width: 13px; height: 13px; }
+    .footer-copy {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--ink-light);
+      opacity: 0.35;
+      text-transform: uppercase;
+    }
+
+    /* ===== 动画 ===== */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 20px 14px 48px; }
+      .paper-masthead, .paper-body, .paper-footer { padding-left: 22px; padding-right: 22px; }
+      .two-col { grid-template-columns: 1fr; gap: 0; }
+      .col-divider { border-left: none; border-top: 1px solid rgba(38,23,23,0.15); padding-top: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-link">
+    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    返回档案
+  </a>
+
+  <div class="dossier-stack">
+    <div class="newspaper">
+
+      <!-- 报头 -->
+      <div class="paper-masthead">
+        <div class="masthead-top">
+          <span>Vol. MMXXIV · No. 001</span>
+          <span>Design Criminal Gazette</span>
+          <span>今日版 · Breaking News</span>
+        </div>
+        <div class="masthead-name">Design <span>Criminal</span> Gazette</div>
+        <div class="masthead-sub">Design Criminal Investigation Bureau · Official Bulletin</div>
+      </div>
+
+      <hr class="section-rule" />
+
+      <!-- 正文区 -->
+      <div class="paper-body">
+
+        <div class="column-tag red">突发 · Breaking</div>
+
+        <h1 class="headline">
+          S级在逃嫌疑人<em>主动现身</em>——<br/>
+          是陷阱，还是金盆洗手？
+        </h1>
+
+        <p class="subheadline">
+          调查局收到当事人主动联系，附上五宗完整案件记录；<br/>
+          态度配合，动机不明，目前仍处于审查阶段。
+        </p>
+
+        <hr class="section-rule thin" />
+
+        <!-- 两栏正文 -->
+        <div class="two-col">
+
+          <!-- 左栏：事件经过 -->
+          <div class="col-left">
+            <div class="article-text">
+              <p>
+                本局追踪已久的 S 级设计犯罪嫌疑人，昨日突然主动与调查员取得联系，并提交了五宗案件的完整现场记录。此举在局内引发广泛讨论——这究竟是一场精心设计的陷阱，还是当事人的真诚投案？
+              </p>
+              <p>
+                据悉，该嫌疑人长期以不同设计师身份游走于平面与建筑两界，作案手法成熟，现场处理干净，此前从未主动暴露行踪。此番突然现身，令调查员颇为意外。
+              </p>
+            </div>
+
+            <!-- 引语 -->
+            <div class="pull-quote">
+              <p>「五宗案件记录俱全，<br/>证据确凿，态度配合。」</p>
+              <cite>— 调查员内部评估报告</cite>
+            </div>
+
+            <div class="article-text">
+              <p>
+                目前，当事人已公开以下联系渠道，供有意核实者直接接触。本局提醒：合作意向请附项目简介，以便评估是否对接。
+              </p>
+            </div>
+          </div>
+
+          <!-- 右栏：联系方式 + 案情摘要 -->
+          <div class="col-right col-divider" style="padding-left:24px;">
+
+            <!-- 联系公告框 -->
+            <div class="contact-box">
+              <div class="box-title">· 当事人公开联系渠道 ·</div>
+
+              <div class="contact-row">
+                <span class="contact-key">邮件</span>
+                <!-- ⬇ 替换邮箱 -->
+                <span class="contact-val">
+                  <a href="mailto:your@email.com">your@email.com</a>
+                </span>
+              </div>
+
+              <div class="contact-row">
+                <span class="contact-key">微信</span>
+                <!-- ⬇ 替换微信号 -->
+                <span class="contact-val">[ 你的微信号 ]</span>
+              </div>
+
+              <div class="contact-row">
+                <span class="contact-key">其他</span>
+                <!-- ⬇ 替换平台用户名 -->
+                <span class="contact-val">
+                  <a href="#" target="_blank">[ 平台 · 用户名 ]</a>
+                </span>
+              </div>
+            </div>
+
+            <!-- 案情摘要小框 -->
+            <div class="article-text" style="margin-top:16px;">
+              <p style="font-size:12px; opacity:0.7;">
+                <strong style="display:block; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:6px; opacity:0.6;">案情摘要</strong>
+                嫌疑人代号未确认 · 作案年限 ≥5 年 ·
+                案件类型：平面设计 / 建筑设计 ·
+                危险等级：S 级 · 状态：主动现身，审查中
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部 -->
+      <div class="paper-footer">
+        <a href="cases.html" class="footer-nav">
+          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          查阅案件档案
+        </a>
+        <div class="footer-copy">© Design Criminal Gazette · All Rights Reserved</div>
+      </div>
+
+    </div><!-- /.newspaper -->
+  </div><!-- /.dossier-stack -->
+
+  <!-- ===================================================
+       GALGAME 对话框层
+       点击任意位置 / 点击"继续"按钮推进对话
+  ==================================================== -->
+  <div id="vn-overlay" class="vn-overlay">
+
+    <!-- 遮罩：半透明压暗背景 -->
+    <div class="vn-backdrop"></div>
+
+    <!-- 对话框 -->
+    <div class="vn-box" id="vn-box">
+      <!-- 角色名牌 -->
+      <div class="vn-nameplate" id="vn-nameplate">调查员 · Detective</div>
+
+      <!-- 对话文字区 -->
+      <div class="vn-text" id="vn-text"></div>
+
+      <!-- 继续按钮 -->
+      <button class="vn-next" id="vn-next" aria-label="继续">
+        <span id="vn-next-label">继续 ▶</span>
+      </button>
+    </div>
+
+  </div>
+
+  <style>
+    /* ===== Galgame 对话框 ===== */
+    .vn-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 0;
+      pointer-events: none; /* 让背景可以滚动 */
+    }
+
+    /* 半透明遮罩，压暗报纸背景 */
+    .vn-backdrop {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(10,4,4,0.82) 0%,
+        rgba(10,4,4,0.55) 40%,
+        rgba(10,4,4,0.0) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* 对话框主体 */
+    .vn-box {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+      background: rgba(18,8,8,0.92);
+      border-top: 2px solid rgba(160,30,30,0.6);
+      border-left: 1px solid rgba(160,30,30,0.2);
+      border-right: 1px solid rgba(160,30,30,0.2);
+      padding: 28px 44px 24px;
+      pointer-events: all;
+      animation: vnSlideUp 0.5s cubic-bezier(0.2,0.8,0.4,1) 0.3s both;
+      /* 扫描线纹理 */
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(255,255,255,0.012) 3px,
+        rgba(255,255,255,0.012) 4px
+      );
+    }
+
+    /* 角色名牌 */
+    .vn-nameplate {
+      display: inline-block;
+      background: rgba(160,30,30,0.15);
+      border: 1px solid rgba(160,30,30,0.5);
+      color: #c87070;
+      font-family: 'Special Elite', serif;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      margin-bottom: 16px;
+    }
+
+    /* 对话文字 */
+    .vn-text {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 16px;
+      color: #ede0d0;
+      line-height: 1.85;
+      min-height: 72px;
+      letter-spacing: 0.02em;
+    }
+
+    /* 继续按钮 */
+    .vn-next {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      background: none;
+      border: 1px solid rgba(160,30,30,0.45);
+      color: #c87070;
+      font-family: 'Special Elite', serif;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .vn-next:hover {
+      background: rgba(160,30,30,0.15);
+      border-color: rgba(160,30,30,0.8);
+      color: #e8a0a0;
+    }
+
+    /* 联系方式内嵌在对话框里 */
+    .vn-contact-block {
+      margin-top: 20px;
+      border: 1px solid rgba(160,30,30,0.3);
+      padding: 16px 20px;
+      background: rgba(160,30,30,0.06);
+    }
+    .vn-contact-block .vc-title {
+      font-family: 'Special Elite', serif;
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #c87070;
+      opacity: 0.7;
+      margin-bottom: 12px;
+    }
+    .vn-contact-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(160,30,30,0.15);
+    }
+    .vn-contact-row:last-child { border-bottom: none; }
+    .vc-key {
+      font-family: 'Special Elite', serif;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #c87070;
+      opacity: 0.55;
+      flex-shrink: 0;
+      width: 40px;
+    }
+    .vc-val {
+      font-family: 'Special Elite', serif;
+      font-size: 14px;
+      color: #ede0d0;
+    }
+    .vc-val a {
+      color: #ede0d0;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(237,224,208,0.25);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .vc-val a:hover { color: #e8a0a0; border-color: rgba(200,112,112,0.6); }
+
+    /* 返回按钮（最后一步） */
+    .vn-return-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      background: rgba(160,30,30,0.12);
+      border: 1px solid rgba(160,30,30,0.5);
+      color: #c87070;
+      font-family: 'Special Elite', serif;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 9px 22px;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .vn-return-btn:hover {
+      background: rgba(160,30,30,0.25);
+      border-color: rgba(160,30,30,0.9);
+      color: #e8a0a0;
+    }
+
+    @keyframes vnSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 打字光标 */
+    .vn-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: #c87070;
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: cursorBlink 0.7s step-end infinite;
+    }
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    @media (max-width: 640px) {
+      .vn-box { padding: 20px 22px 18px; }
+      .vn-text { font-size: 14px; }
+    }
+  </style>
+
+  <script>
+    /* ===== Galgame 对话系统 ===== */
+
+    // 读取来源 case（如果有）
+    const fromCase = sessionStorage.getItem('fromCase');
+    sessionStorage.removeItem('fromCase');
+
+    // 对话脚本
+    const caseRef = fromCase ? `Case 0${fromCase}` : '案件档案';
+    const script = [
+      {
+        name: '调查员 · Detective',
+        text: `……你来了。`,
+      },
+      {
+        name: '调查员 · Detective',
+        text: `我们已经追踪这个嫌疑人很久了。${fromCase ? `你刚才看的那份 ${caseRef}，只是冰山一角。` : '五宗案件，每一宗都留下了清晰的痕迹。'}`,
+      },
+      {
+        name: '调查员 · Detective',
+        text: `说实话——我们不打算逮捕他。\n我们想雇用他。`,
+      },
+      {
+        name: '调查员 · Detective',
+        text: `如果你也有同样的想法，可以通过以下渠道直接联系。\n附上你的项目背景，我们会尽快回复。`,
+        contact: true,
+      },
+    ];
+
+    let step = 0;
+    let typing = false;
+    let currentTimeout = null;
+
+    const nameEl   = document.getElementById('vn-nameplate');
+    const textEl   = document.getElementById('vn-text');
+    const nextBtn  = document.getElementById('vn-next');
+    const nextLabel = document.getElementById('vn-next-label');
+
+    // 打字机效果
+    function typeText(str, onDone) {
+      typing = true;
+      textEl.innerHTML = '';
+      let i = 0;
+      const cursor = document.createElement('span');
+      cursor.className = 'vn-cursor';
+
+      function tick() {
+        if (i < str.length) {
+          // 换行符转 <br>
+          if (str[i] === '\n') {
+            textEl.appendChild(document.createElement('br'));
+          } else {
+            textEl.appendChild(document.createTextNode(str[i]));
+          }
+          textEl.appendChild(cursor);
+          i++;
+          currentTimeout = setTimeout(tick, 38);
+        } else {
+          typing = false;
+          cursor.remove();
+          if (onDone) onDone();
+        }
+      }
+      tick();
+    }
+
+    // 跳过打字，直接显示全文
+    function skipTyping(str) {
+      if (currentTimeout) clearTimeout(currentTimeout);
+      typing = false;
+      textEl.innerHTML = str.replace(/\n/g, '<br>');
+    }
+
+    // 渲染当前步骤
+    function renderStep() {
+      const s = script[step];
+      nameEl.textContent = s.name;
+      nextBtn.style.display = 'flex';
+
+      // 最后一步：显示联系方式 + 返回按钮
+      if (step === script.length - 1) {
+        nextLabel.textContent = '继续 ▶';
+        typeText(s.text, () => {
+          // 打字完成后插入联系方式块
+          if (s.contact) appendContactBlock();
+          nextBtn.style.display = 'none';
+          appendReturnBtn();
+        });
+      } else {
+        nextLabel.textContent = '继续 ▶';
+        typeText(s.text, null);
+      }
+    }
+
+    // 插入联系方式块
+    function appendContactBlock() {
+      const block = document.createElement('div');
+      block.className = 'vn-contact-block';
+      block.innerHTML = `
+        <div class="vc-title">· 当事人公开联系渠道 ·</div>
+        <div class="vn-contact-row">
+          <span class="vc-key">邮件</span>
+          <span class="vc-val"><a href="mailto:your@email.com">your@email.com</a></span>
+        </div>
+        <div class="vn-contact-row">
+          <span class="vc-key">微信</span>
+          <span class="vc-val">[ 你的微信号 ]</span>
+        </div>
+        <div class="vn-contact-row">
+          <span class="vc-key">其他</span>
+          <span class="vc-val"><a href="#" target="_blank">[ 平台 · 用户名 ]</a></span>
+        </div>
+      `;
+      textEl.parentNode.insertBefore(block, nextBtn);
+    }
+
+    // 插入返回按钮
+    function appendReturnBtn() {
+      const returnHref = fromCase ? `case-0${fromCase}.html` : 'cases.html';
+      const returnLabel = fromCase ? `返回 Case 0${fromCase}` : '查阅案件档案';
+      const btn = document.createElement('a');
+      btn.href = returnHref;
+      btn.className = 'vn-return-btn';
+      btn.innerHTML = `← ${returnLabel}`;
+      textEl.parentNode.insertBefore(btn, nextBtn);
+    }
+
+    // 点击"继续"
+    nextBtn.addEventListener('click', () => {
+      if (typing) {
+        // 第一次点击：跳过打字
+        skipTyping(script[step].text);
+        return;
+      }
+      step++;
+      if (step < script.length) {
+        renderStep();
+      }
+    });
+
+    // 启动
+    renderStep();
+  </script>
+
+</body>
+</html>

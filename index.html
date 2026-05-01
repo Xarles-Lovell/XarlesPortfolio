@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>S级悬赏令 — 设计师通缉档案</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Special+Elite&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:        #7A5A44;
+      --paper:     #F4E8DC;
+      --paper-alt: #e0c9b8;
+      --ink:       #1E1010;
+      --ink-light: #5a3030;
+      --red:       #A01E1E;
+      --stamp:     #A01E1E;
+      --tape:      rgba(175,140,118,0.5);
+      --shadow:    rgba(20,8,8,0.4);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 20% 20%, rgba(110,60,45,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(50,20,15,0.4) 0%, transparent 60%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      font-family: 'Special Elite', serif;
+      overflow-x: hidden;
+    }
+
+    /* 顶部机构标识 */
+    .agency-header {
+      text-align: center;
+      margin-bottom: 28px;
+      animation: fadeDown 0.8s ease both;
+    }
+    .agency-header .agency-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: var(--paper-alt);
+      letter-spacing: 0.25em;
+      font-size: 11px;
+      text-transform: uppercase;
+      opacity: 0.75;
+    }
+    .agency-header .agency-line::before,
+    .agency-header .agency-line::after {
+      content: '';
+      width: 60px;
+      height: 1px;
+      background: var(--paper-alt);
+      opacity: 0.4;
+    }
+    .agency-header .case-no {
+      color: var(--paper-alt);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      opacity: 0.5;
+      margin-top: 6px;
+    }
+
+    .card-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      animation: fadeUp 0.9s ease 0.2s both;
+    }
+
+    /* 主卡片 */
+    .wanted-card {
+      position: relative;
+      background: var(--paper);
+      width: 100%;
+      padding: 50px 52px 44px;
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.07) inset,
+        0 20px 60px var(--shadow),
+        0 4px 12px rgba(0,0,0,0.25);
+      transform: rotate(-0.4deg);
+    }
+
+    /* 纸张老化纹理 */
+    .wanted-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 胶带 */
+    .tape-top {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-1deg);
+      width: 80px;
+      height: 28px;
+      background: var(--tape);
+      border-radius: 2px;
+      z-index: 10;
+    }
+    .tape-corner {
+      position: absolute;
+      top: -10px;
+      left: 30px;
+      width: 50px;
+      height: 22px;
+      background: var(--tape);
+      border-radius: 2px;
+      transform: rotate(12deg);
+      z-index: 10;
+    }
+
+    /* 卡片内容层级 */
+    .wanted-card > *:not(.tape-top):not(.tape-corner):not(.stamp) {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 印章 */
+    .stamp {
+      position: absolute;
+      border: 3px solid var(--stamp);
+      color: var(--stamp);
+      font-family: 'Special Elite', serif;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      opacity: 0.6;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .stamp-tl { top: 40px; right: 40px; transform: rotate(15deg); font-size: 10px; z-index: 5; }
+    .stamp-br {
+      bottom: 52px; left: 36px; transform: rotate(-8deg);
+      border-color: var(--red); color: var(--red);
+      font-size: 13px; opacity: 0.45; letter-spacing: 0.2em; z-index: 5;
+    }
+
+    /* 标题区 */
+    .wanted-title {
+      text-align: center;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .wanted-title .en-label {
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .wanted-title h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 6vw, 56px);
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .wanted-title h1 span { color: var(--red); }
+
+    /* 危险等级 */
+    .danger-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .danger-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+    }
+    .danger-dots { display: flex; gap: 5px; }
+    .danger-dots span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 6px rgba(139,26,26,0.5);
+    }
+    .danger-dots span.empty {
+      background: transparent;
+      border: 1.5px solid var(--red);
+      opacity: 0.5;
+    }
+
+    /* 照片 + 信息区 */
+    .profile-section {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 28px;
+      margin-bottom: 24px;
+    }
+    .photo-box {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: #c9b9a8;
+      border: 3px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .photo-box::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(180,155,120,0.3) 25%, transparent 25%) -10px 0,
+        linear-gradient(225deg, rgba(180,155,120,0.3) 25%, transparent 25%) -10px 0,
+        linear-gradient(315deg, rgba(180,155,120,0.3) 25%, transparent 25%),
+        linear-gradient(45deg,  rgba(180,155,120,0.3) 25%, transparent 25%);
+      background-size: 20px 20px;
+      background-color: #bfaa90;
+      opacity: 0.4;
+    }
+    .photo-placeholder {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      color: var(--ink);
+      opacity: 0.45;
+    }
+    .photo-placeholder svg { width: 48px; height: 48px; margin-bottom: 6px; }
+    .photo-placeholder p { font-size: 9px; letter-spacing: 0.15em; }
+    .photo-caption {
+      text-align: center;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--ink-light);
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+
+    /* 档案信息列表 */
+    .info-list { display: flex; flex-direction: column; }
+    .info-row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      border-bottom: 1px dashed rgba(38,23,23,0.22);
+      padding: 9px 0;
+      align-items: start;
+    }
+    .info-row:first-child { border-top: 1px dashed rgba(38,23,23,0.22); }
+    .info-key {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      padding-top: 2px;
+    }
+    .info-val { font-size: 14px; color: var(--ink); line-height: 1.5; }
+    .info-val.highlight { color: var(--red); font-weight: bold; font-size: 15px; }
+
+    /* 简介 */
+    .bio-section {
+      border: 1.5px solid rgba(38,23,23,0.18);
+      background: rgba(38,23,23,0.03);
+      padding: 16px 18px;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .bio-section .bio-label {
+      position: absolute;
+      top: -9px;
+      left: 14px;
+      background: var(--paper);
+      padding: 0 6px;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+    }
+    .bio-section p {
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.9;
+      font-family: 'Noto Serif SC', serif;
+    }
+
+    /* 按钮 */
+    .action-area { text-align: center; }
+    .action-area .hint {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      opacity: 0.7;
+    }
+    .btn-investigate {
+      display: inline-block;
+      background: var(--ink);
+      color: var(--paper);
+      text-decoration: none;
+      font-family: 'Special Elite', serif;
+      font-size: 13px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 14px 40px;
+      border: 2px solid var(--ink);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-investigate::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--red);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .btn-investigate:hover::before { transform: translateX(0); }
+    .btn-investigate span { position: relative; z-index: 1; }
+    .btn-investigate:hover {
+      border-color: var(--red);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139,26,26,0.3);
+    }
+
+    /* 底部小字 */
+    .footer-note {
+      margin-top: 22px;
+      color: var(--paper-alt);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      opacity: 0.35;
+      text-align: center;
+      animation: fadeUp 1s ease 0.6s both;
+    }
+
+    /* 动画 */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 响应式 */
+    @media (max-width: 560px) {
+      .wanted-card { padding: 36px 24px 32px; }
+      .profile-section { grid-template-columns: 1fr; }
+      .photo-box { aspect-ratio: 4/3; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部机构标识 -->
+  <div class="agency-header">
+    <div class="agency-line">Design Criminal Investigation Bureau</div>
+    <div class="case-no">Case No. DC-2024-XARLES · Classification: S-RANK</div>
+  </div>
+
+  <!-- 外层容器：图钉线SVG 和 卡片 的共同定位父级 -->
+  <div class="card-wrapper">
+
+    <!-- 主卡片 -->
+    <div class="wanted-card">
+
+      <div class="tape-top"></div>
+      <div class="tape-corner"></div>
+
+      <div class="stamp stamp-tl">Unconfirmed Identity</div>
+      <div class="stamp stamp-br">Extremely Dangerous</div>
+
+      <!-- 标题 -->
+      <div class="wanted-title">
+        <span class="en-label">Official Notice · Design Criminal Bureau</span>
+        <h1>S 级<span>悬赏令</span></h1>
+      </div>
+
+      <!-- 危险等级 -->
+      <div class="danger-row">
+        <span class="danger-label">危险指数</span>
+        <div class="danger-dots">
+          <span></span><span></span><span></span><span></span><span class="empty"></span>
+        </div>
+        <span class="danger-label">· 极度危险 ·</span>
+      </div>
+
+      <!-- 照片 + 档案信息 -->
+      <div class="profile-section">
+        <div class="photo-frame">
+          <div class="photo-box">
+            <div class="photo-placeholder">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="16" r="9" fill="currentColor"/>
+                <path d="M6 44c0-9.941 8.059-18 18-18s18 8.059 18 18" fill="currentColor"/>
+              </svg>
+              <p>Photo Pending</p>
+            </div>
+          </div>
+          <p class="photo-caption">嫌疑人正面照</p>
+        </div>
+
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-key">代号</span>
+            <span class="info-val highlight">[ 你的昵称 ]</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">状态</span>
+            <span class="info-val">身份不明，持续伪装中</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">伪装能力</span>
+            <span class="info-val">平面设计师 · 建筑设计师 · 视觉犯罪者</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">作案年限</span>
+            <span class="info-val">≥ 5 年，持续作案中</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">已知罪行</span>
+            <span class="info-val">S 级 · 审美犯罪 · 视觉侵入</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">悬赏</span>
+            <span class="info-val highlight">联系即可兑现</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 简介 -->
+      <div class="bio-section">
+        <span class="bio-label">嫌疑人陈述 · Suspect Statement</span>
+        <p>
+          此人身份难以确认，长期以不同设计师身份游走于平面与建筑两界。
+          擅长在视觉语言中留下痕迹，却从不按常理出牌。
+          目前掌握的案件记录共 5 宗，每宗均有完整犯罪现场可供核查。
+        </p>
+      </div>
+
+      <!-- 按钮 -->
+      <div class="action-area">
+        <p class="hint">· 点击查阅完整案件档案 ·</p>
+        <a href="cases.html" class="btn-investigate">
+          <span>开始调查 / Begin Investigation</span>
+        </a>
+      </div>
+
+    </div><!-- /.wanted-card -->
+  </div><!-- /.card-wrapper -->
+
+  <p class="footer-note">Design Criminal Investigation Bureau · All Rights Reserved · 本档案受保密协议保护</p>
+
+</body>
+</html>

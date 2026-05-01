@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>案件档案 — Design Criminal Bureau</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Special+Elite&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #7A5A44;
+      --board:     #EEE0CA;
+      --card:      #ffffff;
+      --ink:       #1E1010;
+      --ink-light: #5a3030;
+      --red:       #A01E1E;
+      --tape:      rgba(175,140,118,0.52);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 10% 10%, rgba(90,48,28,0.45) 0%, transparent 48%),
+        radial-gradient(ellipse at 90% 90%, rgba(40,16,8,0.5) 0%, transparent 48%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+      min-height: 100vh;
+      font-family: 'Special Elite', serif;
+      padding: 36px 28px 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 返回 */
+    .back-link {
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #e0c9b8;
+      text-decoration: none;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover { opacity: 1; }
+    .back-link svg { width: 13px; height: 13px; }
+
+    /* ===== 白板 ===== */
+    .board {
+      position: relative;
+      width: 100%;
+      max-width: 1080px;
+      /* 多层叠加：主色 + 磨损边角 + 咖啡渍 + 纸纹 */
+      background-color: var(--board);
+      background-image:
+        /* 四角深色磨损 */
+        radial-gradient(ellipse at 0% 0%,   rgba(38,23,23,0.12) 0%, transparent 35%),
+        radial-gradient(ellipse at 100% 0%,  rgba(38,23,23,0.10) 0%, transparent 35%),
+        radial-gradient(ellipse at 0% 100%,  rgba(38,23,23,0.14) 0%, transparent 35%),
+        radial-gradient(ellipse at 100% 100%,rgba(38,23,23,0.12) 0%, transparent 35%),
+        /* 咖啡渍/水渍 */
+        radial-gradient(ellipse at 72% 28%, rgba(139,100,60,0.07) 0%, transparent 18%),
+        radial-gradient(ellipse at 20% 75%, rgba(139,100,60,0.05) 0%, transparent 14%),
+        /* 纸张纤维纹理 */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+      /* 四边不均匀阴影，模拟纸张翘曲 */
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.15) inset,
+        -3px 0 8px rgba(38,23,23,0.08) inset,
+        3px 0 8px rgba(38,23,23,0.06) inset,
+        0 -2px 6px rgba(38,23,23,0.05) inset,
+        0 28px 80px rgba(20,8,8,0.55),
+        0 8px 20px rgba(0,0,0,0.3),
+        4px 4px 0 rgba(38,23,23,0.08);  /* 轻微立体感 */
+      padding: 48px 52px 52px;
+      /* 整张白板极轻微倾斜 */
+      transform: rotate(-0.3deg);
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    /* 胶带固定白板四角 */
+    .board-tape {
+      position: absolute;
+      background: var(--tape);
+      border-radius: 1px;
+      z-index: 10;
+    }
+    .bt-tl { width: 60px; height: 22px; top: -11px; left: 28px; transform: rotate(-8deg); }
+    .bt-tr { width: 60px; height: 22px; top: -11px; right: 28px; transform: rotate(8deg); }
+    .bt-bl { width: 50px; height: 20px; bottom: -10px; left: 40px; transform: rotate(6deg); }
+    .bt-br { width: 50px; height: 20px; bottom: -10px; right: 40px; transform: rotate(-6deg); }
+
+    /* ===== 白板标题区 ===== */
+    .board-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      margin-bottom: 32px;
+      border-bottom: 2px solid rgba(38,23,23,0.55);
+      position: relative;
+      z-index: 2;
+    }
+    .board-header .en-sub {
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 6px;
+      opacity: 0.65;
+    }
+    .board-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 3.5vw, 42px);
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .board-header h1 span { color: var(--red); }
+    .board-header .meta {
+      text-align: right;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      color: var(--ink-light);
+      opacity: 0.5;
+      line-height: 1.8;
+      text-transform: uppercase;
+      padding-bottom: 2px;
+    }
+    .board-header .meta em {
+      font-style: normal;
+      color: var(--red);
+      opacity: 0.8;
+    }
+
+    /* ===== 卡片区（相对于白板）===== */
+    /* 固定高度，卡片绝对定位在里面 */
+    .cards-area {
+      position: relative;
+      height: 440px;
+      z-index: 2;
+    }
+
+    /* 箭头SVG */
+    .arrows-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: visible;
+    }
+    .arrow-path {
+      fill: none;
+      stroke: var(--red);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      opacity: 0.65;
+    }
+
+    /* ===== 卡片样式：宝丽来相片风格 ===== */
+    .case-card {
+      position: absolute;
+      width: 172px;
+      /* 宝丽来：纯白底色，厚实边框感 */
+      background: #ffffff;
+      text-decoration: none;
+      display: block;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        2px 4px 14px rgba(20,8,8,0.25),
+        0 1px 4px rgba(0,0,0,0.15);
+      z-index: 5;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      cursor: pointer;
+      /* 宝丽来四周白边 */
+      padding: 8px 8px 0 8px;
+    }
+    .case-card:hover {
+      box-shadow: 4px 8px 24px rgba(20,8,8,0.35), 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+
+    /* 胶条：贴在照片上而非卡片上 */
+    .tape {
+      position: absolute;
+      background: rgba(175,140,118,0.48);
+      border-radius: 1px;
+      z-index: 10;
+    }
+    /* 大卡片照片：左右胶条 */
+    .tape-l { width: 38px; height: 14px; top: -1px; left: 18px; transform: rotate(-9deg); }
+    .tape-r { width: 38px; height: 14px; top: -1px; right: 18px; transform: rotate(9deg); }
+    /* 小/中卡片照片：居中单条 */
+    .tape-c { width: 38px; height: 14px; top: -1px; left: 50%; transform: translateX(-50%); }
+
+    /* 图片区：正方形，紧贴白边内侧 */
+    .case-thumb {
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: #bba88a;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .case-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(20%) contrast(1.05);
+      transition: filter 0.3s;
+      position: relative; z-index: 1;
+    }
+    .case-card:hover .case-thumb img { filter: none; }
+    .thumb-ph {
+      color: var(--ink); opacity: 0.2;
+      font-size: 9px; letter-spacing: 0.1em;
+    }
+
+    /* 宝丽来下方白色文字区 */
+    .case-info {
+      padding: 10px 4px 12px;
+      background: #ffffff;
+    }
+    .case-num {
+      font-size: 8px; letter-spacing: 0.22em;
+      color: var(--ink-light); text-transform: uppercase;
+      opacity: 0.45; margin-bottom: 4px;
+    }
+    .case-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 12px; font-weight: 700;
+      color: var(--ink); line-height: 1.4; margin-bottom: 6px;
+    }
+    .case-tag {
+      display: inline-block;
+      font-size: 8px; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red); border: 1px solid var(--red);
+      padding: 2px 5px; opacity: 0.65;
+    }
+
+    /* ===== 卡片位置：横向流动，上下交错 ===== */
+    /* 参考图：左→右排列，奇数卡片偏上，偶数偏下，像流水线 */
+    /* 间距 ≈ 卡片宽168 + 间隔约36 = 每步~200px */
+    #card-01 { left: 0%;   top: 30px;  transform: rotate(-3deg); animation: cardIn 0.5s ease 0.15s both; }
+    #card-02 { left: 21%;  top: 160px; transform: rotate(2deg);  animation: cardIn 0.5s ease 0.25s both; }
+    #card-03 { left: 42%;  top: 40px;  transform: rotate(-2deg); animation: cardIn 0.5s ease 0.35s both; }
+    #card-04 { left: 63%;  top: 175px; transform: rotate(3.5deg);animation: cardIn 0.5s ease 0.45s both; }
+    #card-05 { left: 81%;  top: 50px;  transform: rotate(-1.5deg);animation: cardIn 0.5s ease 0.55s both; }
+
+    #card-01:hover { transform: rotate(0deg) scale(1.05); }
+    #card-02:hover { transform: rotate(0deg) scale(1.05); }
+    #card-03:hover { transform: rotate(0deg) scale(1.05); }
+    #card-04:hover { transform: rotate(0deg) scale(1.05); }
+    #card-05:hover { transform: rotate(0deg) scale(1.05); }
+
+    /* ===== 旁注 ===== */
+    .card-note {
+      position: absolute;
+      font-size: 10px;
+      line-height: 1.6;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 4;
+    }
+    /* 放在每张卡片下方或旁边 */
+    #note-01 { left:  1%;  top: 295px; }
+    #note-02 { left: 22%;  top: 368px; }
+    #note-03 { left: 43%;  top: 308px; }
+    #note-04 { left: 64%;  top: 385px; }
+
+
+    /* ===== 新消息提示（联系页入口）===== */
+    .msg-bubble {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 100;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--board);
+      border: 1.5px solid rgba(38,23,23,0.2);
+      padding: 12px 18px 12px 14px;
+      box-shadow:
+        0 4px 20px rgba(20,8,8,0.3),
+        0 1px 4px rgba(0,0,0,0.15);
+      transform: rotate(1deg);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      animation: bubbleIn 0.6s cubic-bezier(0.2,0.8,0.4,1) 0.8s both;
+      cursor: pointer;
+      max-width: 220px;
+    }
+    .msg-bubble:hover {
+      transform: rotate(0deg) translateY(-3px);
+      box-shadow: 0 8px 28px rgba(20,8,8,0.38), 0 2px 6px rgba(0,0,0,0.18);
+    }
+    /* 红色未读圆点 */
+    .msg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 0 rgba(139,26,26,0.4);
+      animation: pulse 2s ease 1.4s infinite;
+    }
+    .msg-text {
+      flex: 1;
+    }
+    .msg-text .msg-from {
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      opacity: 0.5;
+      display: block;
+      margin-bottom: 3px;
+    }
+    .msg-text .msg-content {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .msg-arrow {
+      font-size: 11px;
+      color: var(--ink-light);
+      opacity: 0.4;
+      flex-shrink: 0;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .msg-bubble:hover .msg-arrow {
+      opacity: 0.9;
+      transform: translateX(3px);
+    }
+
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: rotate(1deg) translateY(20px); }
+      to   { opacity: 1; transform: rotate(1deg) translateY(0); }
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(139,26,26,0.5); }
+      60%  { box-shadow: 0 0 0 6px rgba(139,26,26,0); }
+      100% { box-shadow: 0 0 0 0 rgba(139,26,26,0); }
+    }
+
+    /* ===== 动画 ===== */
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px) rotate(-0.3deg); }
+      to   { opacity: 1; transform: translateY(0) rotate(-0.3deg); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 响应式降级 */
+    @media (max-width: 700px) {
+      .board { padding: 32px 24px 36px; transform: none; }
+      .cards-area { height: auto; display: flex; flex-direction: column; gap: 28px; align-items: center; }
+      .case-card { position: static; width: 100%; max-width: 280px; transform: none !important; animation: none; opacity: 1; }
+      .arrows-svg, .card-note, .board-tape { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-link">
+    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    返回档案
+  </a>
+
+  <div class="board">
+    <!-- 白板四角胶带 -->
+    <div class="board-tape bt-tl"></div>
+    <div class="board-tape bt-tr"></div>
+    <div class="board-tape bt-bl"></div>
+    <div class="board-tape bt-br"></div>
+
+    <!-- 标题 -->
+    <div class="board-header">
+      <div>
+        <span class="en-sub">Evidence Collection · Case Files</span>
+        <h1>犯罪<span>现场</span>记录</h1>
+      </div>
+      <div class="meta">
+        Case No. DC-2024-XARLES<br/>
+        共 5 宗案件存档<br/>
+        <em>· 建议立即介入 ·</em>
+      </div>
+    </div>
+
+    <!-- 卡片 + 箭头 -->
+    <div class="cards-area" id="cards-area">
+
+      <svg class="arrows-svg" id="arrows-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" markerWidth="7" markerHeight="7" refX="3.5" refY="2.5" orient="auto">
+            <path d="M0,0 L0,5 L6,2.5 z" fill="#8b1a1a" opacity="0.65"/>
+          </marker>
+        </defs>
+      </svg>
+
+      <!-- 01 -->
+      <a href="case-01.html" class="case-card" id="card-01">
+        <div class="tape tape-l"></div>
+        <div class="case-thumb"><span class="thumb-ph">Evidence Photo</span></div>
+        <div class="case-info">
+          <div class="case-num">Case · 01</div>
+          <div class="case-title">[ 案件名称 ]</div>
+          <span class="case-tag">证据确凿</span>
+        </div>
+      </a>
+
+      <!-- 02 -->
+      <a href="case-02.html" class="case-card" id="card-02">
+        <div class="tape tape-c"></div>
+        <div class="case-thumb"><span class="thumb-ph">Evidence Photo</span></div>
+        <div class="case-info">
+          <div class="case-num">Case · 02</div>
+          <div class="case-title">[ 案件名称 ]</div>
+          <span class="case-tag">证据确凿</span>
+        </div>
+      </a>
+
+      <!-- 03 -->
+      <a href="case-03.html" class="case-card" id="card-03">
+        <div class="tape tape-r"></div>
+        <div class="case-thumb"><span class="thumb-ph">Evidence Photo</span></div>
+        <div class="case-info">
+          <div class="case-num">Case · 03</div>
+          <div class="case-title">[ 案件名称 ]</div>
+          <span class="case-tag">证据确凿</span>
+        </div>
+      </a>
+
+      <!-- 04 -->
+      <a href="case-04.html" class="case-card" id="card-04">
+        <div class="tape tape-c"></div>
+        <div class="case-thumb"><span class="thumb-ph">Evidence Photo</span></div>
+        <div class="case-info">
+          <div class="case-num">Case · 04</div>
+          <div class="case-title">[ 案件名称 ]</div>
+          <span class="case-tag">调查中</span>
+        </div>
+      </a>
+
+      <!-- 05 -->
+      <a href="case-05.html" class="case-card" id="card-05">
+        <div class="tape tape-l"></div>
+        <div class="case-thumb"><span class="thumb-ph">Evidence Photo</span></div>
+        <div class="case-info">
+          <div class="case-num">Case · 05</div>
+          <div class="case-title">[ 案件名称 ]</div>
+          <span class="case-tag">调查中</span>
+        </div>
+      </a>
+
+      <!-- 旁注 -->
+      <div class="card-note" id="note-01">作案手法<br/>待确认</div>
+      <div class="card-note" id="note-02">关键证物<br/>已归档</div>
+      <div class="card-note" id="note-03">与01存在关联</div>
+      <div class="card-note" id="note-04">持续追踪中</div>
+
+    </div>
+  </div>
+
+  <script>
+    function getCenter(el) {
+      const area = document.getElementById('cards-area');
+      const ar = area.getBoundingClientRect();
+      const er = el.getBoundingClientRect();
+      return {
+        x: er.left - ar.left + er.width / 2,
+        y: er.top  - ar.top  + er.height / 2,
+      };
+    }
+
+    function makeArrow(svg, from, to, bend) {
+      const mx = (from.x + to.x) / 2 + (to.y - from.y) * bend;
+      const my = (from.y + to.y) / 2 - (to.x - from.x) * bend;
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', `M${from.x},${from.y} Q${mx},${my} ${to.x},${to.y}`);
+      p.setAttribute('class', 'arrow-path');
+      p.setAttribute('marker-end', 'url(#arr)');
+      svg.appendChild(p);
+    }
+
+    function drawArrows() {
+      const svg = document.getElementById('arrows-svg');
+      svg.querySelectorAll('path.arrow-path').forEach(p => p.remove());
+      const ids = ['card-01','card-02','card-03','card-04','card-05'];
+      const centers = ids.map(id => getCenter(document.getElementById(id)));
+      const bends = [0.15, -0.12, 0.12, -0.15];
+      for (let i = 0; i < 4; i++) {
+        makeArrow(svg, centers[i], centers[i+1], bends[i]);
+      }
+    }
+
+    window.addEventListener('load', drawArrows);
+    window.addEventListener('resize', drawArrows);
+  </script>
+
+  <!-- 新消息提示：联系页入口 -->
+  <a href="contact.html" class="msg-bubble">
+    <div class="msg-dot"></div>
+    <div class="msg-text">
+      <span class="msg-from">收到新消息</span>
+      <span class="msg-content">嫌疑人主动现身——</span>
+    </div>
+    <span class="msg-arrow">→</span>
+  </a>
+
+</body>
+</html>
