@@ -475,6 +475,9 @@
     </div><!-- /.newspaper -->
   </div><!-- /.dossier-stack -->
 
+  <!-- 重新打开对话框按钮 -->
+  <button class="vn-reopen" id="vn-reopen">嫌疑人消息 ▲</button>
+
   <!-- ===================================================
        GALGAME 对话框层
        点击任意位置 / 点击"继续"按钮推进对话
@@ -724,6 +727,8 @@
     }
     .vn-reopen:hover { background: rgba(40,12,12,0.95); }
     .vn-overlay.collapsed ~ .vn-reopen { display: block; }
+
+    /* 打字光标 */
     .vn-cursor {
       display: inline-block;
       width: 2px;
@@ -781,6 +786,18 @@
     const textEl   = document.getElementById('vn-text');
     const nextBtn  = document.getElementById('vn-next');
     const nextLabel = document.getElementById('vn-next-label');
+    const overlay  = document.getElementById('vn-overlay');
+    const closeBtn = document.getElementById('vn-close');
+    const reopenBtn = document.getElementById('vn-reopen');
+
+    // 关闭对话框
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.add('collapsed');
+    });
+    // 重新打开
+    reopenBtn.addEventListener('click', () => {
+      overlay.classList.remove('collapsed');
+    });
 
     // 打字机效果
     function typeText(str, onDone) {
