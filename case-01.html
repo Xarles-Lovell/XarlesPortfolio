@@ -43,19 +43,28 @@
       align-self: flex-start;
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: var(--paper-alt);
+      gap: 10px;
+      background: var(--paper);
+      border: 1.5px solid rgba(30,16,16,0.15);
+      color: var(--ink);
       text-decoration: none;
+      font-family: 'Noto Serif SC', serif;
       font-size: 14px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      opacity: 0.7;
-      transition: opacity 0.2s;
+      letter-spacing: 0.08em;
+      padding: 12px 20px;
       margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(10,4,4,0.2), 0 1px 4px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
       animation: fadeDown 0.5s ease both;
     }
-    .back-link:hover { opacity: 1; }
-    .back-link svg { width: 18px; height: 18px; }
+    .back-link:hover {
+      background: var(--ink);
+      border-color: rgba(160,30,30,0.5);
+      color: var(--paper);
+      box-shadow: 0 6px 24px rgba(10,4,4,0.4);
+      transform: translateY(-2px);
+    }
+    .back-link svg { width: 16px; height: 16px; transition: color 0.3s; }
 
     /* ===== 堆叠纸张容器 ===== */
     /* 用相对定位的wrapper承载主纸 + 底层纸 */
@@ -793,22 +802,23 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      background: var(--ink);
-      border: 1px solid rgba(160,30,30,0.5);
+      background: var(--paper);
+      border: 1.5px solid rgba(30,16,16,0.15);
       padding: 20px 22px;
+      box-shadow:
+        0 4px 20px rgba(10,4,4,0.25),
+        0 1px 4px rgba(0,0,0,0.12);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .msg-bubble:hover .msg-bubble-inner {
+      background: var(--ink);
+      border-color: rgba(160,30,30,0.5);
       box-shadow:
         0 0 0 1px rgba(160,30,30,0.15),
         0 8px 32px rgba(10,4,4,0.6),
         0 2px 8px rgba(0,0,0,0.4);
-      position: relative;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .msg-bubble:hover .msg-bubble-inner {
       transform: translateY(-3px);
-      box-shadow:
-        0 0 0 1px rgba(160,30,30,0.35),
-        0 12px 40px rgba(10,4,4,0.7),
-        0 4px 12px rgba(0,0,0,0.5);
     }
     /* 未读角标 */
     .msg-unread {
@@ -855,24 +865,29 @@
       color: var(--red);
       opacity: 0.85;
       margin-bottom: 4px;
+      transition: color 0.3s;
     }
     .msg-preview {
       display: block;
       font-family: 'Noto Serif SC', serif;
       font-size: 16px;
-      color: #e8d8c8;
+      color: var(--ink);
       line-height: 1.4;
       white-space: nowrap;
+      transition: color 0.3s;
     }
+    .msg-bubble:hover .msg-preview { color: #e8d8c8; }
     .msg-chevron {
-      color: rgba(232,216,200,0.3);
+      color: var(--ink-light);
       font-size: 24px;
       flex-shrink: 0;
-      transition: color 0.2s, transform 0.2s;
+      transition: color 0.3s, transform 0.2s;
       line-height: 1;
+      opacity: 0.4;
     }
     .msg-bubble:hover .msg-chevron {
       color: rgba(232,216,200,0.8);
+      opacity: 1;
       transform: translateX(3px);
     }
 
