@@ -47,6 +47,7 @@
       color: var(--paper-alt);
       text-decoration: none;
       font-size: 14px;
+      font-weight: 700;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       opacity: 0.7;
@@ -191,7 +192,6 @@
       color: var(--ink);
       line-height: 1.1;
       max-width: 580px;
-      -webkit-text-stroke: 0.5px var(--ink);
     }
     .case-header h1 em {
       font-style: normal;
@@ -207,13 +207,6 @@
     }
     .case-status-badge {
       display: inline-block;
-      border: 2px solid var(--red);
-      color: var(--red);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding: 5px 12px;
-      opacity: 0.9;
       margin-bottom: 12px;
     }
     .header-meta {
@@ -266,9 +259,8 @@
       font-weight: 900;
       color: var(--ink);
       letter-spacing: 0.03em;
-      -webkit-text-stroke: 0.4px var(--ink);
     }
-    .section-label h2 span { color: var(--red); font-weight: 900; -webkit-text-stroke: 0.4px var(--red); }
+    .section-label h2 span { color: var(--red); font-weight: 900; }
     .section-label::after {
       content: '';
       flex: 1;
@@ -497,6 +489,7 @@
       text-decoration: none;
       font-family: 'Special Elite', serif;
       font-size: 14px;
+      font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       padding: 14px 34px;
@@ -634,7 +627,9 @@
           <h1>[ <em>案件名称</em> ]</h1>
         </div>
         <div class="header-right">
-          <div class="case-status-badge">已结案</div>
+          <div class="case-status-badge">
+            <img src="已结案.png" alt="已结案" style="height: 48px; transform: rotate(3deg); display: block;">
+          </div>
           <div class="header-meta">
             <!-- ⬇ 替换信息 -->
             设计类型：平面设计<br/>
