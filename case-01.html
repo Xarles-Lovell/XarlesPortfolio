@@ -163,7 +163,7 @@
     /* ===== 案件头部 ===== */
     .case-header {
       padding: 52px 60px 32px 80px;
-      border-bottom: 2px solid var(--ink);
+      border-bottom: 1px solid rgba(30,16,16,0.15);
       position: relative;
       z-index: 2;
     }
@@ -237,11 +237,10 @@
     /* ===== 通用section样式 ===== */
     .section {
       padding: 36px 60px 36px 80px;
-      border-bottom: 1px dashed rgba(30,16,16,0.2);
       position: relative;
       z-index: 2;
     }
-    .section:last-child { border-bottom: none; }
+    .section:last-child { }
 
     .section-label {
       display: flex;
@@ -464,17 +463,9 @@
     }
     /* 结论页印章 */
     .conclusion-stamp {
-      display: inline-block;
+      display: block;
       margin-top: 20px;
-      border: 3px solid var(--red);
-      color: var(--red);
-      font-family: 'Special Elite', serif;
-      font-size: 13px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding: 7px 16px;
-      opacity: 0.75;
-      transform: rotate(-4deg);
+      text-align: right;
     }
 
     /* ===== 底부 导航：上一个/下一个案件 ===== */
