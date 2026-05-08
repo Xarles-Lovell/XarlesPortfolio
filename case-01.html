@@ -493,10 +493,10 @@
       color: var(--paper);
       text-decoration: none;
       font-family: 'Special Elite', serif;
-      font-size: 12px;
+      font-size: 14px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      padding: 12px 28px;
+      padding: 14px 34px;
       border: 2px solid var(--ink);
       transition: all 0.25s ease;
       position: relative;
@@ -520,8 +520,8 @@
 
     /* ===== 翻纸动效 ===== */
 
-    /* 给整个场景加透视，让3D翻转有深度感 */
-    body { perspective: 1400px; }
+    /* 给卷宗容器加透视，让3D翻转有深度感 */
+    .dossier-stack { perspective: 1400px; }
 
     /* 翻出：向左翻（前往下一页），绕右边缘旋转 */
     .flip-out-left {
