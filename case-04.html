@@ -511,7 +511,7 @@
 
     /* ===== 翻纸动效 ===== */
 
-    /* 给卷宗容器加透视，让3D翻转有深度感 */
+    /* 给卷宗容器的父级加透视 */
     .dossier-stack { perspective: 1400px; }
 
     /* 翻出：向左翻（前往下一页），绕右边缘旋转 */
@@ -753,7 +753,7 @@
 
     <!-- 底部案件导航 -->
     <div class="case-nav">
-      <a href="cases.html" class="nav-btn"><span>← 所有案件</span></a>
+      <a href="case-03.html" class="nav-btn"><span>← 上一案</span></a>
       <a href="case-05.html" class="nav-btn"><span>下一案 →</span></a>
     </div>
 
@@ -918,23 +918,27 @@
 
         e.preventDefault();
 
-        // 判断方向：href文件名数字比当前大→下一页向左翻出，反之向右
-        const currentNum = 4; // 每个页面修改这个数字
+        // 判断方向
+        const currentNum = 4;
         const match = href.match(/case-(\d+)\.html/);
-        if (!match) return;
+        if (!match) { window.location.href = href; return; }
         const targetNum = parseInt(match[1]);
         const dir = targetNum > currentNum ? 'left' : 'right';
 
-        // 翻出动画
-        stack.classList.add(dir === 'left' ? 'flip-out-left' : 'flip-out-right');
+        // 翻出动画加在 dossier 上（不是 stack，避免 perspective 冲突）
+        const dossier = stack.querySelector('.dossier');
+        dossier.classList.add(dir === 'left' ? 'flip-out-left' : 'flip-out-right');
 
         // 告诉下一页从哪个方向翻入
         sessionStorage.setItem('flipDir', dir === 'left' ? 'left' : 'right');
 
         // 动画结束后跳转
-        stack.addEventListener('animationend', () => {
+        dossier.addEventListener('animationend', () => {
           window.location.href = href;
         }, { once: true });
+
+        // 备用：如果动画没触发，0.6s 后强制跳转
+        setTimeout(() => { window.location.href = href; }, 650);
       });
     });
   </script>
