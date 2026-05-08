@@ -38,21 +38,17 @@
       align-items: center;
     }
 
-    /* ===== 顶部导航 ===== */
+    /* ===== 返回 ===== */
     .top-nav {
-      position: relative;
+      display: flex;
+      align-items: center;
       width: 100%;
       max-width: 1020px;
-      margin: 0 0 28px 0;
-      padding: 0 24px;
-      animation: fadeDown 0.5s ease both;
+      margin-bottom: 28px;
+      position: relative;
     }
     .back-link {
-      position: fixed;
-      top: 24px;
-      left: 24px;
-      z-index: 100;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 10px;
       color: var(--paper-alt);
@@ -62,6 +58,7 @@
       letter-spacing: 0.12em;
       opacity: 0.8;
       transition: opacity 0.2s;
+      flex-shrink: 0;
     }
     .back-link:hover { opacity: 1; }
     .back-link svg { width: 20px; height: 20px; }
@@ -70,8 +67,7 @@
     .progress-bar {
       position: absolute;
       left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -596,6 +592,7 @@
       </svg>
       返回
     </a>
+
     <div class="progress-bar">
       <a href="case-01.html" class="prog-item">case01</a>
       <span class="prog-sep">——</span>
