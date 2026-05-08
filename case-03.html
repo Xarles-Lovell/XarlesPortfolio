@@ -6,7 +6,7 @@
   <title>Case 03 — Design Criminal Bureau</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Special+Elite&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Special+Elite&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet" />
 
   <style>
     :root {
@@ -32,7 +32,7 @@
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
       font-family: 'Special Elite', serif;
       min-height: 100vh;
-      padding: 36px 28px 72px;
+      padding: 36px 12px 72px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -43,26 +43,26 @@
       align-self: flex-start;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       color: var(--paper-alt);
       text-decoration: none;
-      font-size: 10px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      opacity: 0.6;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      opacity: 0.8;
       transition: opacity 0.2s;
-      margin-bottom: 20px;
+      margin: 0 0 20px 24px;
       animation: fadeDown 0.5s ease both;
     }
     .back-link:hover { opacity: 1; }
-    .back-link svg { width: 13px; height: 13px; }
+    .back-link svg { width: 20px; height: 20px; }
 
     /* ===== 堆叠纸张容器 ===== */
     /* 用相对定位的wrapper承载主纸 + 底层纸 */
     .dossier-stack {
       position: relative;
       width: 100%;
-      max-width: 860px;
+      max-width: 1020px;
       animation: fadeUp 0.8s ease 0.1s both;
     }
 
@@ -128,23 +128,41 @@
     }
 
     /* ===== 照片胶条 ===== */
+    /* 照片容器需要relative才能放胶条 */
     .photo-placeholder,
     .photo-item { position: relative; overflow: visible !important; }
+
     .photo-tape {
       position: absolute;
       background: rgba(175,140,118,0.50);
       border-radius: 1px;
       z-index: 10;
+      /* 半透明让胶条下方的图片内容隐约透出 */
       backdrop-filter: brightness(1.05);
     }
-    .tape-photo-tl { width: 52px; height: 18px; top: -9px; left: 16px; transform: rotate(-10deg); }
-    .tape-photo-tr { width: 52px; height: 18px; top: -9px; right: 16px; transform: rotate(10deg); }
-    .tape-photo-tc { width: 42px; height: 16px; top: -8px; left: 50%; transform: translateX(-50%); }
+    /* 大图：左上角胶条，向左倾斜 */
+    .tape-photo-tl {
+      width: 52px; height: 18px;
+      top: -9px; left: 16px;
+      transform: rotate(-10deg);
+    }
+    /* 大图：右上角胶条，向右倾斜（对称） */
+    .tape-photo-tr {
+      width: 52px; height: 18px;
+      top: -9px; right: 16px;
+      transform: rotate(10deg);
+    }
+    /* 小图：顶部居中单条 */
+    .tape-photo-tc {
+      width: 42px; height: 16px;
+      top: -8px; left: 50%;
+      transform: translateX(-50%);
+    }
 
     /* ===== 案件头部 ===== */
     .case-header {
       padding: 52px 60px 32px 80px;
-      border-bottom: 2px solid var(--ink);
+      border-bottom: 1.5px solid rgba(30,16,16,0.35);
       position: relative;
       z-index: 2;
     }
@@ -167,7 +185,7 @@
     }
 
     .case-header h1 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display', 'Noto Serif SC', serif;
       font-size: clamp(32px, 5vw, 54px);
       font-weight: 900;
       color: var(--ink);
@@ -175,34 +193,32 @@
       max-width: 580px;
     }
     .case-header h1 em {
-      font-style: italic;
+      font-style: normal;
       color: var(--red);
+      font-weight: 900;
     }
 
     .header-right {
       text-align: right;
       flex-shrink: 0;
       margin-left: 24px;
-      padding-top: 4px;
+      padding-top: 16px;
     }
     .case-status-badge {
       display: inline-block;
-      border: 2px solid var(--red);
-      color: var(--red);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding: 5px 12px;
-      opacity: 0.9;
       margin-bottom: 12px;
     }
     .header-meta {
-      font-size: 11px;
-      letter-spacing: 0.15em;
+      font-size: 15px;
+      letter-spacing: 0.12em;
       color: var(--ink-light);
-      opacity: 0.65;
-      line-height: 1.9;
-      text-transform: uppercase;
+      opacity: 0.8;
+      line-height: 2;
+      text-transform: none;
+    }
+    .header-meta strong {
+      color: var(--ink);
+      font-weight: 700;
     }
 
     /* 一句话描述 */
@@ -220,11 +236,10 @@
     /* ===== 通用section样式 ===== */
     .section {
       padding: 36px 60px 36px 80px;
-      border-bottom: 1px dashed rgba(30,16,16,0.2);
       position: relative;
       z-index: 2;
     }
-    .section:last-child { border-bottom: none; }
+    .section:last-child { }
 
     .section-label {
       display: flex;
@@ -234,6 +249,7 @@
     }
     .section-label .num {
       font-size: 11px;
+      font-weight: 700;
       letter-spacing: 0.2em;
       color: var(--ink-light);
       opacity: 0.55;
@@ -241,13 +257,13 @@
       flex-shrink: 0;
     }
     .section-label h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      font-weight: 700;
+      font-family: 'Playfair Display', 'Noto Serif SC', serif;
+      font-size: 24px;
+      font-weight: 900;
       color: var(--ink);
       letter-spacing: 0.03em;
     }
-    .section-label h2 span { color: var(--red); }
+    .section-label h2 span { color: var(--red); font-weight: 900; }
     .section-label::after {
       content: '';
       flex: 1;
@@ -335,9 +351,9 @@
     /* ===== 正文段落 ===== */
     .prose {
       font-family: 'Noto Serif SC', serif;
-      font-size: 14px;
+      font-size: 15px;
       color: var(--ink);
-      line-height: 1.95;
+      line-height: 2;
       max-width: 640px;
     }
     .prose p + p { margin-top: 14px; }
@@ -351,18 +367,18 @@
     }
     .step {
       display: grid;
-      grid-template-columns: 36px 1fr;
-      gap: 16px;
+      grid-template-columns: 40px 1fr;
+      gap: 18px;
       align-items: start;
     }
     .step-num {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border: 2px solid var(--ink);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: bold;
       color: var(--ink);
       flex-shrink: 0;
@@ -370,16 +386,16 @@
     }
     .step-content h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--ink);
       margin-bottom: 6px;
     }
     .step-content p {
       font-family: 'Noto Serif SC', serif;
-      font-size: 13px;
+      font-size: 14px;
       color: var(--ink-light);
-      line-height: 1.8;
+      line-height: 1.85;
     }
 
     /* ===== 物证清单 ===== */
@@ -390,9 +406,9 @@
     }
     .evidence-item {
       background: var(--paper-alt);
-      padding: 16px;
+      padding: 18px;
       position: relative;
-      border: 1px solid rgba(38,23,23,0.1);
+      border: 1px solid rgba(30,16,16,0.12);
     }
     .evidence-item::before {
       content: attr(data-num);
@@ -401,29 +417,29 @@
       left: 12px;
       background: var(--paper-alt);
       padding: 0 5px;
-      font-size: 9px;
+      font-size: 10px;
       letter-spacing: 0.2em;
       color: var(--red);
       text-transform: uppercase;
     }
     .evidence-item h4 {
       font-family: 'Playfair Display', serif;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       color: var(--ink);
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
     .evidence-item p {
       font-family: 'Noto Serif SC', serif;
-      font-size: 12px;
+      font-size: 13px;
       color: var(--ink-light);
-      line-height: 1.7;
+      line-height: 1.75;
     }
 
     /* ===== 案件结论 ===== */
     .conclusion-block {
-      background: rgba(38,23,23,0.04);
-      border: 1.5px solid rgba(38,23,23,0.15);
+      background: rgba(30,16,16,0.04);
+      border: 1.5px solid rgba(30,16,16,0.18);
       padding: 24px 28px;
       position: relative;
       max-width: 640px;
@@ -433,30 +449,22 @@
       top: -9px; left: 16px;
       background: var(--paper);
       padding: 0 6px;
-      font-size: 9px;
+      font-size: 10px;
       letter-spacing: 0.2em;
       color: var(--ink-light);
       text-transform: uppercase;
     }
     .conclusion-block p {
       font-family: 'Noto Serif SC', serif;
-      font-size: 14px;
+      font-size: 15px;
       color: var(--ink);
-      line-height: 1.9;
+      line-height: 1.95;
     }
     /* 结论页印章 */
     .conclusion-stamp {
-      display: inline-block;
+      display: flex;
+      justify-content: flex-end;
       margin-top: 20px;
-      border: 3px solid var(--red);
-      color: var(--red);
-      font-family: 'Special Elite', serif;
-      font-size: 12px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding: 6px 14px;
-      opacity: 0.6;
-      transform: rotate(-4deg);
     }
 
     /* ===== 底부 导航：上一个/下一个案件 ===== */
@@ -465,39 +473,46 @@
       justify-content: space-between;
       align-items: center;
       padding: 28px 60px 28px 80px;
-      border-top: 1px solid rgba(38,23,23,0.15);
+      border-top: 1.5px solid rgba(30,16,16,0.35);
       position: relative;
       z-index: 2;
     }
-    .case-nav a {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--ink-light);
+    .nav-btn {
+      display: inline-block;
+      background: var(--ink);
+      color: var(--paper);
       text-decoration: none;
-      font-size: 10px;
+      font-family: 'Special Elite', serif;
+      font-size: 14px;
+      font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      opacity: 0.5;
-      transition: opacity 0.2s;
+      padding: 14px 34px;
+      border: 2px solid var(--ink);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
     }
-    .case-nav a:hover { opacity: 1; }
-    .case-nav a svg { width: 13px; height: 13px; }
-    .case-nav .center-link {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      color: var(--ink-light);
-      text-decoration: none;
-      text-transform: uppercase;
-      opacity: 0.4;
-      transition: opacity 0.2s;
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--red);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
     }
-    .case-nav .center-link:hover { opacity: 0.8; }
+    .nav-btn:hover::before { transform: translateX(0); }
+    .nav-btn span { position: relative; z-index: 1; }
+    .nav-btn:hover {
+      border-color: var(--red);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(160,30,30,0.3);
+    }
 
     /* ===== 翻纸动效 ===== */
 
-    /* 给整个场景加透视，让3D翻转有深度感 */
-    body { perspective: 1400px; }
+    /* 给卷宗容器加透视，让3D翻转有深度感 */
+    .dossier-stack { perspective: 1400px; }
 
     /* 翻出：向左翻（前往下一页），绕右边缘旋转 */
     .flip-out-left {
@@ -590,7 +605,7 @@
     <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-    返回现场记录
+    返回
   </a>
 
   <div class="dossier-stack" id="dossier-stack">
@@ -607,12 +622,14 @@
           <h1>[ <em>案件名称</em> ]</h1>
         </div>
         <div class="header-right">
-          <div class="case-status-badge">已结案</div>
+          <div class="case-status-badge">
+            <img src="已结案.png" alt="已结案" style="height: 80px; transform: rotate(3deg); display: block;">
+          </div>
           <div class="header-meta">
             <!-- ⬇ 替换信息 -->
-            设计类型：平面设计<br/>
-            完成年份：2023<br/>
-            委托方：[ 客户名称 ]
+            <strong>设计类型：</strong>平面设计<br/>
+            <strong>完成年份：</strong>2023<br/>
+            <strong>委托方：</strong>[ 客户名称 ]
           </div>
         </div>
       </div>
@@ -629,12 +646,14 @@
 
       <!-- 主图 + 两张副图的组合布局，有图时替换占位格 -->
       <div class="photo-grid">
+        <!-- 大图：左右两边各一条胶条 -->
         <div class="photo-placeholder main-ph">
           <div class="photo-tape tape-photo-tl"></div>
           <div class="photo-tape tape-photo-tr"></div>
           <span>Main Visual · 主视觉图</span>
         </div>
         <div class="photo-sub-grid">
+          <!-- 小图：顶部居中单条 -->
           <div class="photo-placeholder sub-ph">
             <div class="photo-tape tape-photo-tc"></div>
             <span>Detail 01</span>
@@ -726,63 +745,150 @@
         <span class="conclusion-label">Final Assessment · 最终评估</span>
         <!-- ⬇ 替换结论文字 -->
         <p>[ 在这里写项目总结：最终达到了什么效果？得到了什么反馈？有什么值得记录的经验或成果数据？]</p>
-        <div class="conclusion-stamp">Case Closed</div>
+        <div class="conclusion-stamp">
+          <img src="已结案.png" alt="已结案" style="height: 56px; transform: rotate(-8deg); display: block;">
+        </div>
       </div>
     </div>
 
     <!-- 底部案件导航 -->
     <div class="case-nav">
-      <a href="cases.html">
-        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        所有案件
-      </a>
-      <a href="cases.html" class="center-link">· Case Files ·</a>
-      <a href="case-04.html">
-        下一案件
-        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
+      <a href="cases.html" class="nav-btn"><span>← 所有案件</span></a>
+      <a href="case-04.html" class="nav-btn"><span>下一案 →</span></a>
     </div>
 
   </div><!-- /.dossier -->
   </div><!-- /.dossier-stack -->
 
-  <!-- ===== 新消息气泡 ===== -->
+  <!-- ===== 新消息气泡：联系页入口 ===== -->
   <a href="contact.html" class="msg-bubble" id="msg-bubble" onclick="sessionStorage.setItem('fromCase','03')">
     <div class="msg-bubble-inner">
       <div class="msg-unread">1</div>
-      <div class="msg-avatar">调查局</div>
+      <div class="msg-dot-pulse"></div>
       <div class="msg-body">
-        <span class="msg-sender">Design Criminal Bureau</span>
-        <span class="msg-preview" id="msg-preview"></span>
+        <span class="msg-sender">收到新消息</span>
+        <span class="msg-preview">嫌疑人主动现身——</span>
       </div>
       <div class="msg-chevron">›</div>
     </div>
   </a>
+
   <style>
-    .msg-bubble { position: fixed; bottom: 28px; right: 28px; z-index: 200; text-decoration: none; width: 260px; animation: msgSlideIn 0.5s cubic-bezier(0.2,0.8,0.4,1) 1.8s both; }
-    .msg-bubble-inner { display: flex; align-items: center; gap: 10px; background: var(--ink); border: 1px solid rgba(160,30,30,0.5); padding: 12px 14px; box-shadow: 0 0 0 1px rgba(160,30,30,0.15), 0 8px 32px rgba(10,4,4,0.6); position: relative; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .msg-bubble:hover .msg-bubble-inner { transform: translateY(-3px); box-shadow: 0 0 0 1px rgba(160,30,30,0.35), 0 12px 40px rgba(10,4,4,0.7); }
-    .msg-unread { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: var(--red); color: #f4e8dc; font-family: 'Special Elite', serif; font-size: 10px; display: flex; align-items: center; justify-content: center; animation: unreadPulse 2s ease 2.3s infinite; }
-    .msg-avatar { width: 36px; height: 36px; background: rgba(160,30,30,0.2); border: 1px solid rgba(160,30,30,0.4); color: var(--red); font-family: 'Special Elite', serif; font-size: 8px; display: flex; align-items: center; justify-content: center; text-align: center; flex-shrink: 0; line-height: 1.2; }
-    .msg-body { flex: 1; min-width: 0; }
-    .msg-sender { display: block; font-family: 'Special Elite', serif; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--red); opacity: 0.9; margin-bottom: 4px; }
-    .msg-preview { display: block; font-family: 'Noto Serif SC', serif; font-size: 13px; color: #e8d8c8; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .msg-chevron { color: rgba(232,216,200,0.3); font-size: 20px; flex-shrink: 0; transition: color 0.2s, transform 0.2s; line-height: 1; }
-    .msg-bubble:hover .msg-chevron { color: rgba(232,216,200,0.8); transform: translateX(3px); }
-    @keyframes msgSlideIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    @keyframes unreadPulse { 0% { box-shadow: 0 0 0 0 rgba(160,30,30,0.6); } 60% { box-shadow: 0 0 0 6px rgba(160,30,30,0); } 100% { box-shadow: 0 0 0 0 rgba(160,30,30,0); } }
+    /* ===== 消息气泡：游戏UI风格 ===== */
+    .msg-bubble {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 200;
+      text-decoration: none;
+      width: auto;
+      animation: msgSlideIn 0.5s cubic-bezier(0.2, 0.8, 0.4, 1) 0s both;
+    }
+    .msg-bubble-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--paper);
+      border: 1.5px solid rgba(30,16,16,0.15);
+      padding: 18px 22px;
+      box-shadow:
+        0 6px 28px rgba(10,4,4,0.35),
+        0 2px 8px rgba(0,0,0,0.18),
+        0 0 0 1px rgba(30,16,16,0.06);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .msg-bubble:hover .msg-bubble-inner {
+      background: var(--ink);
+      border-color: rgba(160,30,30,0.5);
+      box-shadow:
+        0 0 0 1px rgba(160,30,30,0.15),
+        0 10px 40px rgba(10,4,4,0.65),
+        0 3px 10px rgba(0,0,0,0.4);
+      transform: translateY(-3px);
+    }
+    /* 未读角标 */
+    .msg-unread {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--red);
+      color: #f4e8dc;
+      font-family: 'Special Elite', serif;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: unreadPulse 2s ease 0.5s infinite;
+    }
+    /* 动态红点 */
+    .msg-dot-pulse {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--red);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 0 rgba(160,30,30,0.5);
+      animation: dotPulse 2s ease infinite;
+    }
+    @keyframes dotPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(160,30,30,0.6); }
+      50%  { box-shadow: 0 0 0 8px rgba(160,30,30,0); }
+      100% { box-shadow: 0 0 0 0 rgba(160,30,30,0); }
+    }
+    /* 文字区 */
+    .msg-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .msg-sender {
+      display: block;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      color: var(--red);
+      opacity: 0.85;
+      margin-bottom: 5px;
+      transition: color 0.3s;
+    }
+    .msg-preview {
+      display: block;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.4;
+      white-space: nowrap;
+      transition: color 0.3s;
+    }
+    .msg-bubble:hover .msg-preview { color: #e8d8c8; }
+    .msg-chevron {
+      color: var(--ink-light);
+      font-size: 24px;
+      flex-shrink: 0;
+      transition: color 0.3s, transform 0.2s;
+      line-height: 1;
+      opacity: 0.4;
+    }
+    .msg-bubble:hover .msg-chevron {
+      color: rgba(232,216,200,0.8);
+      opacity: 1;
+      transform: translateX(3px);
+    }
+
+    @keyframes msgSlideIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes unreadPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(160,30,30,0.6); }
+      60%  { box-shadow: 0 0 0 6px rgba(160,30,30,0); }
+      100% { box-shadow: 0 0 0 0 rgba(160,30,30,0); }
+    }
   </style>
-  <script>
-    const previewEl = document.getElementById('msg-preview');
-    const previewText = '收到新消息——嫌疑人主动现身';
-    let i = 0;
-    function typePreview() { if (i <= previewText.length) { previewEl.textContent = previewText.slice(0,i); i++; setTimeout(typePreview, i < 8 ? 0 : 60); } }
-    setTimeout(typePreview, 2200);
-  </script>
 
   <script>
     const stack = document.getElementById('dossier-stack');
@@ -833,3 +939,4 @@
     });
   </script>
 </html>
+

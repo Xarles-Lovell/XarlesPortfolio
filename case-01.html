@@ -43,20 +43,19 @@
       align-self: flex-start;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       color: var(--paper-alt);
       text-decoration: none;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      opacity: 0.7;
+      letter-spacing: 0.12em;
+      opacity: 0.8;
       transition: opacity 0.2s;
       margin: 0 0 20px 24px;
       animation: fadeDown 0.5s ease both;
     }
     .back-link:hover { opacity: 1; }
-    .back-link svg { width: 16px; height: 16px; transition: color 0.3s; }
+    .back-link svg { width: 20px; height: 20px; }
 
     /* ===== 堆叠纸张容器 ===== */
     /* 用相对定位的wrapper承载主纸 + 底层纸 */
@@ -620,7 +619,7 @@
         <div>
           <span class="case-number-badge">Design Criminal Bureau · Case File 01</span>
           <!-- ⬇ 替换案件名称 -->
-          <h1>「<em>案件名称</em>」</h1>
+          <h1>[ <em>案件名称</em> ]</h1>
         </div>
         <div class="header-right">
           <div class="case-status-badge">
