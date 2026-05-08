@@ -39,8 +39,17 @@
     }
 
     /* ===== 返回 ===== */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1020px;
+      margin: 0 0 28px 0;
+      padding: 0 24px;
+      animation: fadeDown 0.5s ease both;
+    }
     .back-link {
-      align-self: flex-start;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -51,8 +60,6 @@
       letter-spacing: 0.12em;
       opacity: 0.8;
       transition: opacity 0.2s;
-      margin: 0 0 12px 24px;
-      animation: fadeDown 0.5s ease both;
     }
     .back-link:hover { opacity: 1; }
     .back-link svg { width: 20px; height: 20px; }
@@ -62,7 +69,6 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 0 0 32px 24px;
       font-family: 'Special Elite', serif;
       font-size: 18px;
       letter-spacing: 0.08em;
@@ -576,24 +582,25 @@
 </head>
 <body>
 
-  <a href="cases.html" class="back-link">
-    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    返回
-  </a>
-
-  <!-- 进度轴 -->
-  <div class="progress-bar">
-    <a href="case-01.html" class="prog-item">case01</a>
-    <span class="prog-sep">——</span>
-    <a href="case-02.html" class="prog-item">case02</a>
-    <span class="prog-sep">——</span>
-    <a href="case-03.html" class="prog-item">case03</a>
-    <span class="prog-sep">——</span>
-    <a href="case-04.html" class="prog-item active">case04</a>
-    <span class="prog-sep">——</span>
-    <a href="case-05.html" class="prog-item">case05</a>
+  <!-- 顶部导航栏：返回 + 进度轴 -->
+  <div class="top-nav">
+    <a href="cases.html" class="back-link">
+      <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      返回
+    </a>
+    <div class="progress-bar">
+      <a href="case-01.html" class="prog-item">case01</a>
+      <span class="prog-sep">——</span>
+      <a href="case-02.html" class="prog-item">case02</a>
+      <span class="prog-sep">——</span>
+      <a href="case-03.html" class="prog-item">case03</a>
+      <span class="prog-sep">——</span>
+      <a href="case-04.html" class="prog-item active">case04</a>
+      <span class="prog-sep">——</span>
+      <a href="case-05.html" class="prog-item">case05</a>
+    </div>
   </div>
 
   <div class="dossier-stack" id="dossier-stack">
