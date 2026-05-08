@@ -6,7 +6,7 @@
   <title>Case 01 — Design Criminal Bureau</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Special+Elite&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Special+Elite&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet" />
 
   <style>
     :root {
@@ -185,13 +185,13 @@
     }
 
     .case-header h1 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display', 'Noto Serif SC', serif;
       font-size: clamp(32px, 5vw, 54px);
       font-weight: 900;
       color: var(--ink);
       line-height: 1.1;
       max-width: 580px;
-      text-shadow: 0 1px 0 rgba(30,16,16,0.08);
+      -webkit-text-stroke: 0.5px var(--ink);
     }
     .case-header h1 em {
       font-style: normal;
@@ -261,13 +261,14 @@
       flex-shrink: 0;
     }
     .section-label h2 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display', 'Noto Serif SC', serif;
       font-size: 24px;
       font-weight: 900;
       color: var(--ink);
       letter-spacing: 0.03em;
+      -webkit-text-stroke: 0.4px var(--ink);
     }
-    .section-label h2 span { color: var(--red); font-weight: 900; }
+    .section-label h2 span { color: var(--red); font-weight: 900; -webkit-text-stroke: 0.4px var(--red); }
     .section-label::after {
       content: '';
       flex: 1;
