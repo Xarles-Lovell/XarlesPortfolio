@@ -46,16 +46,16 @@
       gap: 8px;
       color: var(--paper-alt);
       text-decoration: none;
-      font-size: 10px;
+      font-size: 14px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      opacity: 0.6;
+      opacity: 0.7;
       transition: opacity 0.2s;
       margin-bottom: 20px;
       animation: fadeDown 0.5s ease both;
     }
     .back-link:hover { opacity: 1; }
-    .back-link svg { width: 13px; height: 13px; }
+    .back-link svg { width: 18px; height: 18px; }
 
     /* ===== 堆叠纸张容器 ===== */
     /* 用相对定位的wrapper承载主纸 + 底层纸 */
@@ -483,34 +483,40 @@
       justify-content: space-between;
       align-items: center;
       padding: 28px 60px 28px 80px;
-      border-top: 1px solid rgba(38,23,23,0.15);
+      border-top: 1px solid rgba(30,16,16,0.15);
       position: relative;
       z-index: 2;
     }
-    .case-nav a {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--ink-light);
+    .nav-btn {
+      display: inline-block;
+      background: var(--ink);
+      color: var(--paper);
       text-decoration: none;
-      font-size: 10px;
+      font-family: 'Special Elite', serif;
+      font-size: 12px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      opacity: 0.5;
-      transition: opacity 0.2s;
+      padding: 12px 28px;
+      border: 2px solid var(--ink);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
     }
-    .case-nav a:hover { opacity: 1; }
-    .case-nav a svg { width: 13px; height: 13px; }
-    .case-nav .center-link {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      color: var(--ink-light);
-      text-decoration: none;
-      text-transform: uppercase;
-      opacity: 0.4;
-      transition: opacity 0.2s;
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--red);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
     }
-    .case-nav .center-link:hover { opacity: 0.8; }
+    .nav-btn:hover::before { transform: translateX(0); }
+    .nav-btn span { position: relative; z-index: 1; }
+    .nav-btn:hover {
+      border-color: var(--red);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(160,30,30,0.3);
+    }
 
     /* ===== 翻纸动效 ===== */
 
@@ -752,19 +758,8 @@
 
     <!-- 底部案件导航 -->
     <div class="case-nav">
-      <a href="cases.html">
-        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        所有案件
-      </a>
-      <a href="cases.html" class="center-link">· Case Files ·</a>
-      <a href="case-02.html">
-        下一案件
-        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
+      <a href="cases.html" class="nav-btn"><span>← 所有案件</span></a>
+      <a href="case-02.html" class="nav-btn"><span>下一案 →</span></a>
     </div>
 
   </div><!-- /.dossier -->
@@ -792,7 +787,7 @@
       z-index: 200;
       text-decoration: none;
       width: 260px;
-      animation: msgSlideIn 0.5s cubic-bezier(0.2, 0.8, 0.4, 1) 1.8s both;
+      animation: msgSlideIn 0.5s cubic-bezier(0.2, 0.8, 0.4, 1) 0s both;
     }
     .msg-bubble-inner {
       display: flex;
@@ -830,7 +825,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: unreadPulse 2s ease 2.3s infinite;
+      animation: unreadPulse 2s ease 0.5s infinite;
     }
     /* 头像 */
     .msg-avatar {
@@ -910,7 +905,7 @@
         setTimeout(typePreview, i < 8 ? 0 : 60);
       }
     }
-    setTimeout(typePreview, 2200);
+    setTimeout(typePreview, 200);
   </script>
 
   <script>
