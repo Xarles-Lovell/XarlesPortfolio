@@ -865,6 +865,7 @@
       font-size: 15px;
       color: #e8d8c8;
       line-height: 1.5;
+      white-space: nowrap;
     }
     .msg-chevron {
       color: rgba(232,216,200,0.3);
@@ -892,7 +893,7 @@
   <script>
     /* 打字机效果：消息预览文字 */
     const previewEl = document.getElementById('msg-preview');
-    const previewText = '收到新消息——嫌疑人主动现身';
+    const previewText = 'NEW! 嫌疑人主动现身？';
     let i = 0;
     function typePreview() {
       if (i <= previewText.length) {
