@@ -203,7 +203,7 @@
       text-align: right;
       flex-shrink: 0;
       margin-left: 24px;
-      padding-top: 4px;
+      padding-top: 16px;
     }
     .case-status-badge {
       display: inline-block;
@@ -216,6 +216,10 @@
       opacity: 0.8;
       line-height: 2;
       text-transform: none;
+    }
+    .header-meta strong {
+      color: var(--ink);
+      font-weight: 700;
     }
 
     /* 一句话描述 */
@@ -751,7 +755,9 @@
         <span class="conclusion-label">Final Assessment · 最终评估</span>
         <!-- ⬇ 替换结论文字 -->
         <p>[ 在这里写项目总结：最终达到了什么效果？得到了什么反馈？有什么值得记录的经验或成果数据？]</p>
-        <div class="conclusion-stamp">Case Closed</div>
+        <div class="conclusion-stamp">
+          <img src="已结案.png" alt="已结案" style="height: 56px; transform: rotate(-3deg); display: block;">
+        </div>
       </div>
     </div>
 
