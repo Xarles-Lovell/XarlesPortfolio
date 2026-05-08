@@ -769,10 +769,10 @@
   <a href="contact.html" class="msg-bubble" id="msg-bubble" onclick="sessionStorage.setItem('fromCase','01')">
     <div class="msg-bubble-inner">
       <div class="msg-unread">1</div>
-      <div class="msg-avatar">调查局</div>
+      <div class="msg-dot-pulse"></div>
       <div class="msg-body">
-        <span class="msg-sender">Design Criminal Bureau</span>
-        <span class="msg-preview" id="msg-preview"></span>
+        <span class="msg-sender">收到新消息</span>
+        <span class="msg-preview">嫌疑人主动现身——</span>
       </div>
       <div class="msg-chevron">›</div>
     </div>
@@ -827,22 +827,20 @@
       justify-content: center;
       animation: unreadPulse 2s ease 0.5s infinite;
     }
-    /* 头像 */
-    .msg-avatar {
-      width: 48px;
-      height: 48px;
-      background: rgba(160,30,30,0.2);
-      border: 1px solid rgba(160,30,30,0.4);
-      color: var(--red);
-      font-family: 'Special Elite', serif;
-      font-size: 10px;
-      letter-spacing: 0.05em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+    /* 动态红点 */
+    .msg-dot-pulse {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--red);
       flex-shrink: 0;
-      line-height: 1.2;
+      box-shadow: 0 0 0 0 rgba(160,30,30,0.5);
+      animation: dotPulse 2s ease infinite;
+    }
+    @keyframes dotPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(160,30,30,0.6); }
+      50%  { box-shadow: 0 0 0 8px rgba(160,30,30,0); }
+      100% { box-shadow: 0 0 0 0 rgba(160,30,30,0); }
     }
     /* 文字区 */
     .msg-body {
@@ -851,20 +849,19 @@
     }
     .msg-sender {
       display: block;
-      font-family: 'Special Elite', serif;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 12px;
+      letter-spacing: 0.12em;
       color: var(--red);
-      opacity: 0.9;
-      margin-bottom: 6px;
+      opacity: 0.85;
+      margin-bottom: 4px;
     }
     .msg-preview {
       display: block;
       font-family: 'Noto Serif SC', serif;
-      font-size: 15px;
+      font-size: 16px;
       color: #e8d8c8;
-      line-height: 1.5;
+      line-height: 1.4;
       white-space: nowrap;
     }
     .msg-chevron {
@@ -889,21 +886,6 @@
       100% { box-shadow: 0 0 0 0 rgba(160,30,30,0); }
     }
   </style>
-
-  <script>
-    /* 打字机效果：消息预览文字 */
-    const previewEl = document.getElementById('msg-preview');
-    const previewText = 'NEW! 嫌疑人主动现身？';
-    let i = 0;
-    function typePreview() {
-      if (i <= previewText.length) {
-        previewEl.textContent = previewText.slice(0, i);
-        i++;
-        setTimeout(typePreview, i < 8 ? 0 : 60);
-      }
-    }
-    setTimeout(typePreview, 200);
-  </script>
 
   <script>
     const stack = document.getElementById('dossier-stack');
