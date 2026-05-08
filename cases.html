@@ -39,18 +39,18 @@
       align-self: flex-start;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       color: #e0c9b8;
       text-decoration: none;
-      font-size: 13px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      opacity: 0.6;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      opacity: 0.8;
       transition: opacity 0.2s;
       margin-bottom: 20px;
     }
     .back-link:hover { opacity: 1; }
-    .back-link svg { width: 18px; height: 18px; }
+    .back-link svg { width: 20px; height: 20px; }
 
     /* ===== 白板 ===== */
     .board {
@@ -284,80 +284,92 @@
     #note-04 { left: 64%;  top: 445px; }
 
 
-    /* ===== 新消息提示（联系页入口）===== */
-    .msg-bubble {
+    /* ===== 新消息气泡 ===== */
+    .msg-bubble-new {
       position: fixed;
-      bottom: 32px;
-      right: 32px;
-      z-index: 100;
+      bottom: 28px;
+      right: 28px;
+      z-index: 200;
       text-decoration: none;
+      width: auto;
+    }
+    .msg-bubble-inner {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
       background: var(--board);
-      border: 1.5px solid rgba(38,23,23,0.2);
-      padding: 12px 18px 12px 14px;
-      box-shadow:
-        0 4px 20px rgba(20,8,8,0.3),
-        0 1px 4px rgba(0,0,0,0.15);
-      transform: rotate(1deg);
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
-      animation: bubbleIn 0.6s cubic-bezier(0.2,0.8,0.4,1) 0.8s both;
-      cursor: pointer;
-      max-width: 220px;
+      border: 1.5px solid rgba(30,16,16,0.15);
+      padding: 18px 22px;
+      box-shadow: 0 6px 28px rgba(10,4,4,0.35), 0 2px 8px rgba(0,0,0,0.18), 0 0 0 1px rgba(30,16,16,0.06);
+      position: relative;
+      transition: all 0.3s ease;
     }
-    .msg-bubble:hover {
-      transform: rotate(0deg) translateY(-3px);
-      box-shadow: 0 8px 28px rgba(20,8,8,0.38), 0 2px 6px rgba(0,0,0,0.18);
+    .msg-bubble-new:hover .msg-bubble-inner {
+      background: var(--ink);
+      border-color: rgba(160,30,30,0.5);
+      box-shadow: 0 0 0 1px rgba(160,30,30,0.15), 0 10px 40px rgba(10,4,4,0.65), 0 3px 10px rgba(0,0,0,0.4);
+      transform: translateY(-3px);
     }
-    /* 红色未读圆点 */
-    .msg-dot {
-      width: 8px;
-      height: 8px;
+    .msg-unread {
+      position: absolute;
+      top: -7px; right: -7px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--red);
+      color: #f4e8dc;
+      font-family: 'Special Elite', serif;
+      font-size: 11px;
+      display: flex; align-items: center; justify-content: center;
+      animation: unreadPulse 2s ease 0.5s infinite;
+    }
+    .msg-dot-pulse {
+      width: 14px; height: 14px;
       border-radius: 50%;
       background: var(--red);
       flex-shrink: 0;
-      box-shadow: 0 0 0 0 rgba(139,26,26,0.4);
-      animation: pulse 2s ease 1.4s infinite;
+      box-shadow: 0 0 0 0 rgba(160,30,30,0.5);
+      animation: dotPulse 2s ease infinite;
     }
-    .msg-text {
-      flex: 1;
+    @keyframes dotPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(160,30,30,0.6); }
+      50%  { box-shadow: 0 0 0 8px rgba(160,30,30,0); }
+      100% { box-shadow: 0 0 0 0 rgba(160,30,30,0); }
     }
-    .msg-text .msg-from {
-      font-size: 8px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ink-light);
-      opacity: 0.5;
+    .msg-body { flex: 1; min-width: 0; }
+    .msg-sender {
       display: block;
-      margin-bottom: 3px;
-    }
-    .msg-text .msg-content {
       font-family: 'Noto Serif SC', serif;
       font-size: 13px;
+      letter-spacing: 0.12em;
+      color: var(--red);
+      opacity: 0.85;
+      margin-bottom: 5px;
+      transition: color 0.3s;
+    }
+    .msg-preview {
+      display: block;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 18px;
+      font-weight: 700;
       color: var(--ink);
       line-height: 1.4;
+      white-space: nowrap;
+      transition: color 0.3s;
     }
-    .msg-arrow {
-      font-size: 11px;
+    .msg-bubble-new:hover .msg-preview { color: #e8d8c8; }
+    .msg-chevron {
       color: var(--ink-light);
-      opacity: 0.4;
+      font-size: 24px;
       flex-shrink: 0;
-      transition: transform 0.2s, opacity 0.2s;
+      transition: color 0.3s, transform 0.2s;
+      line-height: 1;
+      opacity: 0.4;
     }
-    .msg-bubble:hover .msg-arrow {
-      opacity: 0.9;
-      transform: translateX(3px);
-    }
-
-    @keyframes bubbleIn {
-      from { opacity: 0; transform: rotate(1deg) translateY(20px); }
-      to   { opacity: 1; transform: rotate(1deg) translateY(0); }
-    }
-    @keyframes pulse {
-      0%   { box-shadow: 0 0 0 0 rgba(139,26,26,0.5); }
-      60%  { box-shadow: 0 0 0 6px rgba(139,26,26,0); }
-      100% { box-shadow: 0 0 0 0 rgba(139,26,26,0); }
+    .msg-bubble-new:hover .msg-chevron { color: rgba(232,216,200,0.8); opacity: 1; transform: translateX(3px); }
+    @keyframes unreadPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(160,30,30,0.6); }
+      60%  { box-shadow: 0 0 0 6px rgba(160,30,30,0); }
+      100% { box-shadow: 0 0 0 0 rgba(160,30,30,0); }
     }
 
     /* ===== 动画 ===== */
@@ -389,7 +401,7 @@
     <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-    返回档案
+    返回
   </a>
 
   <div class="board">
@@ -523,14 +535,17 @@
     window.addEventListener('resize', drawArrows);
   </script>
 
-  <!-- 新消息提示：联系页入口 -->
-  <a href="contact.html" class="msg-bubble">
-    <div class="msg-dot"></div>
-    <div class="msg-text">
-      <span class="msg-from">收到新消息</span>
-      <span class="msg-content">嫌疑人主动现身——</span>
+  <!-- 新消息气泡：联系页入口 -->
+  <a href="contact.html" class="msg-bubble-new">
+    <div class="msg-bubble-inner">
+      <div class="msg-unread">1</div>
+      <div class="msg-dot-pulse"></div>
+      <div class="msg-body">
+        <span class="msg-sender">收到新消息</span>
+        <span class="msg-preview">嫌疑人主动现身——</span>
+      </div>
+      <div class="msg-chevron">›</div>
     </div>
-    <span class="msg-arrow">→</span>
   </a>
 
 </body>
