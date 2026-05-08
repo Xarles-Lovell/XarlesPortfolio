@@ -57,6 +57,33 @@
     .back-link:hover { opacity: 1; }
     .back-link svg { width: 20px; height: 20px; }
 
+    /* ===== 进度轴 ===== */
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      font-family: 'Special Elite', serif;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+    }
+    .prog-item {
+      color: var(--paper-alt);
+      opacity: 0.35;
+      transition: opacity 0.2s;
+    }
+    .prog-item.active {
+      opacity: 1;
+      color: var(--paper);
+      font-weight: 700;
+    }
+    .prog-sep {
+      color: var(--paper-alt);
+      opacity: 0.2;
+      font-size: 12px;
+    }
+
     /* ===== 堆叠纸张容器 ===== */
     /* 用相对定位的wrapper承载主纸 + 底层纸 */
     .dossier-stack {
@@ -554,6 +581,19 @@
     </svg>
     返回
   </a>
+
+  <!-- 进度轴 -->
+  <div class="progress-bar">
+    <span class="prog-item">01</span>
+    <span class="prog-sep">—</span>
+    <span class="prog-item">02</span>
+    <span class="prog-sep">—</span>
+    <span class="prog-item active">03</span>
+    <span class="prog-sep">—</span>
+    <span class="prog-item">04</span>
+    <span class="prog-sep">—</span>
+    <span class="prog-item">05</span>
+  </div>
 
   <div class="dossier-stack" id="dossier-stack">
   <div class="dossier">
