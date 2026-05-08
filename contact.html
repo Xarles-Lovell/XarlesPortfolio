@@ -43,7 +43,8 @@
       gap: 8px;
       color: var(--paper-alt);
       text-decoration: none;
-      font-size: 10px;
+      font-size: 18px;
+      font-weight: 700;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       opacity: 0.6;
@@ -350,11 +351,11 @@
 </head>
 <body>
 
-  <a href="index.html" class="back-link">
+  <a href="index.html" class="back-link" id="back-link">
     <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-    返回档案
+    返回
   </a>
 
   <div class="dossier-stack">
@@ -476,7 +477,7 @@
   </div><!-- /.dossier-stack -->
 
   <!-- 重新打开对话框按钮 -->
-  <button class="vn-reopen" id="vn-reopen">嫌疑人消息 ▲</button>
+  <button class="vn-reopen" id="vn-reopen">回顾对话</button>
 
   <!-- ===================================================
        GALGAME 对话框层
@@ -497,10 +498,11 @@
       <!-- 对话文字区 -->
       <div class="vn-text" id="vn-text"></div>
 
-      <!-- 继续按钮 -->
-      <button class="vn-next" id="vn-next" aria-label="继续">
-        <span id="vn-next-label">继续 ▶</span>
-      </button>
+      <!-- 按钮区：返回 + 继续 -->
+      <div class="vn-btns" id="vn-btns">
+        <button class="vn-prev" id="vn-prev" style="display:none"><span>◀ 返回</span></button>
+        <button class="vn-next" id="vn-next"><span>继续 ▶</span></button>
+      </div>
     </div>
 
   </div>
@@ -579,24 +581,28 @@
       letter-spacing: 0.02em;
     }
 
-    /* 继续按钮 */
-    .vn-next {
+    /* 按钮区容器 */
+    .vn-btns {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
       margin-top: 20px;
+    }
+
+    /* 返回 + 继续按钮共用样式 */
+    .vn-prev, .vn-next {
       background: none;
       border: 1px solid rgba(160,30,30,0.45);
       color: #c87070;
       font-family: 'Special Elite', serif;
-      font-size: 11px;
-      letter-spacing: 0.22em;
+      font-size: 12px;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       padding: 8px 20px;
       cursor: pointer;
       transition: background 0.2s, border-color 0.2s, color 0.2s;
     }
-    .vn-next:hover {
+    .vn-prev:hover, .vn-next:hover {
       background: rgba(160,30,30,0.15);
       border-color: rgba(160,30,30,0.8);
       color: #e8a0a0;
@@ -649,29 +655,6 @@
     }
     .vc-val a:hover { color: #e8a0a0; border-color: rgba(200,112,112,0.6); }
 
-    /* 返回按钮（最后一步） */
-    .vn-return-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 20px;
-      background: rgba(160,30,30,0.12);
-      border: 1px solid rgba(160,30,30,0.5);
-      color: #c87070;
-      font-family: 'Special Elite', serif;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      padding: 9px 22px;
-      text-decoration: none;
-      transition: background 0.2s, border-color 0.2s, color 0.2s;
-    }
-    .vn-return-btn:hover {
-      background: rgba(160,30,30,0.25);
-      border-color: rgba(160,30,30,0.9);
-      color: #e8a0a0;
-    }
-
     @keyframes vnSlideUp {
       from { opacity: 0; transform: translateY(30px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -693,18 +676,11 @@
     }
     .vn-close:hover { color: rgba(200,112,112,0.9); }
 
-    /* 收起状态 */
+    /* 收起状态：整个 overlay 淡出并禁用点击 */
     .vn-overlay.collapsed {
+      opacity: 0;
       pointer-events: none;
-    }
-    .vn-overlay.collapsed .vn-backdrop {
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .vn-overlay.collapsed .vn-box {
-      transform: translateY(100%);
-      opacity: 0;
-      transition: transform 0.35s ease, opacity 0.3s ease;
+      transition: opacity 0.3s ease;
     }
 
     /* 重新打开按钮（收起后显示在右下角） */
@@ -717,16 +693,14 @@
       border: 1px solid rgba(160,30,30,0.5);
       color: #c87070;
       font-family: 'Special Elite', serif;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding: 8px 16px;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      padding: 12px 22px;
       cursor: pointer;
       display: none;
       transition: background 0.2s;
     }
     .vn-reopen:hover { background: rgba(40,12,12,0.95); }
-    .vn-overlay.collapsed ~ .vn-reopen { display: block; }
 
     /* 打字光标 */
     .vn-cursor {
@@ -752,11 +726,16 @@
   <script>
     /* ===== Galgame 对话系统 ===== */
 
-    // 读取来源 case（如果有）
+    // —— 左上角返回按钮动态化 ——
+    // 根据 sessionStorage 里存的 fromCase 决定返回哪个页面
+    const backLink = document.getElementById('back-link');
     const fromCase = sessionStorage.getItem('fromCase');
-    sessionStorage.removeItem('fromCase');
+    if (fromCase) {
+      backLink.href = `case-0${fromCase}.html`;
+    }
+    // 不要 removeItem，对话脚本也要用 fromCase
 
-    // 对话脚本
+    // —— 对话脚本（嫌疑人视角的 4 段对话）——
     const caseRef = fromCase ? `Case 0${fromCase}` : '案件档案';
     const script = [
       {
@@ -778,38 +757,32 @@
       },
     ];
 
-    let step = 0;
-    let typing = false;
-    let currentTimeout = null;
+    // —— 状态变量 ——
+    let step = 0;        // 当前对话步骤（从 0 开始）
+    let typing = false;  // 是否正在打字中
+    let currentTimeout = null; // 打字机的 setTimeout 引用
 
-    const nameEl   = document.getElementById('vn-nameplate');
-    const textEl   = document.getElementById('vn-text');
-    const nextBtn  = document.getElementById('vn-next');
-    const nextLabel = document.getElementById('vn-next-label');
-    const overlay  = document.getElementById('vn-overlay');
-    const closeBtn = document.getElementById('vn-close');
+    // —— 获取页面元素 ——
+    const nameEl    = document.getElementById('vn-nameplate');
+    const textEl    = document.getElementById('vn-text');
+    const nextBtn   = document.getElementById('vn-next');
+    const prevBtn   = document.getElementById('vn-prev');
+    const overlay   = document.getElementById('vn-overlay');
+    const closeBtn  = document.getElementById('vn-close');
     const reopenBtn = document.getElementById('vn-reopen');
 
-    // 关闭对话框
-    closeBtn.addEventListener('click', () => {
-      overlay.classList.add('collapsed');
-    });
-    // 重新打开
-    reopenBtn.addEventListener('click', () => {
-      overlay.classList.remove('collapsed');
-    });
-
-    // 打字机效果
+    // —— 打字机效果：一个字一个字地显示文字 ——
     function typeText(str, onDone) {
       typing = true;
       textEl.innerHTML = '';
       let i = 0;
+      // 创建一个闪烁的光标
       const cursor = document.createElement('span');
       cursor.className = 'vn-cursor';
 
       function tick() {
         if (i < str.length) {
-          // 换行符转 <br>
+          // 遇到换行符就插入 <br>
           if (str[i] === '\n') {
             textEl.appendChild(document.createElement('br'));
           } else {
@@ -819,6 +792,7 @@
           i++;
           currentTimeout = setTimeout(tick, 38);
         } else {
+          // 打字完成，移除光标
           typing = false;
           cursor.remove();
           if (onDone) onDone();
@@ -827,35 +801,14 @@
       tick();
     }
 
-    // 跳过打字，直接显示全文
+    // —— 跳过打字，直接显示全文 ——
     function skipTyping(str) {
       if (currentTimeout) clearTimeout(currentTimeout);
       typing = false;
       textEl.innerHTML = str.replace(/\n/g, '<br>');
     }
 
-    // 渲染当前步骤
-    function renderStep() {
-      const s = script[step];
-      nameEl.textContent = s.name;
-      nextBtn.style.display = 'flex';
-
-      // 最后一步：显示联系方式 + 返回按钮
-      if (step === script.length - 1) {
-        nextLabel.textContent = '继续 ▶';
-        typeText(s.text, () => {
-          // 打字完成后插入联系方式块
-          if (s.contact) appendContactBlock();
-          nextBtn.style.display = 'none';
-          appendReturnBtn();
-        });
-      } else {
-        nextLabel.textContent = '继续 ▶';
-        typeText(s.text, null);
-      }
-    }
-
-    // 插入联系方式块
+    // —— 插入联系方式块（最后一段对话时显示）——
     function appendContactBlock() {
       const block = document.createElement('div');
       block.className = 'vn-contact-block';
@@ -874,34 +827,77 @@
           <span class="vc-val"><a href="#" target="_blank">[ 平台 · 用户名 ]</a></span>
         </div>
       `;
-      textEl.parentNode.insertBefore(block, nextBtn);
+      // 把联系方式块插入到按钮区前面
+      document.getElementById('vn-btns').before(block);
     }
 
-    // 插入返回按钮
-    function appendReturnBtn() {
-      const returnHref = fromCase ? `case-0${fromCase}.html` : 'cases.html';
-      const returnLabel = fromCase ? `返回 Case 0${fromCase}` : '查阅案件档案';
-      const btn = document.createElement('a');
-      btn.href = returnHref;
-      btn.className = 'vn-return-btn';
-      btn.innerHTML = `← ${returnLabel}`;
-      textEl.parentNode.insertBefore(btn, nextBtn);
+    // —— 渲染当前步骤的对话 ——
+    function renderStep() {
+      const s = script[step];
+      // 更新角色名牌
+      nameEl.textContent = s.name;
+
+      // 控制"返回"按钮的显示：第一段不显示，第二段开始显示
+      prevBtn.style.display = step > 0 ? 'inline-block' : 'none';
+
+      // 开始打字效果，打字完成后如果有联系方式就显示
+      typeText(s.text, () => {
+        if (s.contact) appendContactBlock();
+      });
     }
 
-    // 点击"继续"
+    // —— 点击"继续 ▶"按钮 ——
     nextBtn.addEventListener('click', () => {
+      // 如果正在打字，先跳过打字直接显示全文
       if (typing) {
-        // 第一次点击：跳过打字
         skipTyping(script[step].text);
+        if (script[step].contact) appendContactBlock();
         return;
       }
+      // 进入下一步
       step++;
-      if (step < script.length) {
+      if (step >= script.length) {
+        // 已经是最后一段了，关闭对话框，显示报纸
+        overlay.classList.add('collapsed');
+        reopenBtn.style.display = 'block';
+      } else {
+        // 清除可能存在的联系方式块
+        const cb = document.querySelector('.vn-contact-block');
+        if (cb) cb.remove();
         renderStep();
       }
     });
 
-    // 启动
+    // —— 点击"◀ 返回"按钮 ——
+    prevBtn.addEventListener('click', () => {
+      // 如果正在打字，先跳过打字
+      if (typing) {
+        skipTyping(script[step].text);
+        return;
+      }
+      // 回到上一段对话
+      if (step > 0) {
+        step--;
+        // 清除可能存在的联系方式块
+        const cb = document.querySelector('.vn-contact-block');
+        if (cb) cb.remove();
+        renderStep();
+      }
+    });
+
+    // —— 点击 × 关闭按钮 ——
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.add('collapsed');
+      reopenBtn.style.display = 'block';
+    });
+
+    // —— 点击"回顾对话"重新打开对话框 ——
+    reopenBtn.addEventListener('click', () => {
+      overlay.classList.remove('collapsed');
+      reopenBtn.style.display = 'none';
+    });
+
+    // —— 启动：显示第一段对话 ——
     renderStep();
   </script>
 
