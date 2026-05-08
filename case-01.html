@@ -32,7 +32,7 @@
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
       font-family: 'Special Elite', serif;
       min-height: 100vh;
-      padding: 24px 12px 72px;
+      padding: 36px 12px 72px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -194,8 +194,9 @@
       text-shadow: 0 1px 0 rgba(30,16,16,0.08);
     }
     .case-header h1 em {
-      font-style: italic;
+      font-style: normal;
       color: var(--red);
+      font-weight: 900;
     }
 
     .header-right {
@@ -266,7 +267,7 @@
       color: var(--ink);
       letter-spacing: 0.03em;
     }
-    .section-label h2 span { color: var(--red); }
+    .section-label h2 span { color: var(--red); font-weight: 900; }
     .section-label::after {
       content: '';
       flex: 1;
