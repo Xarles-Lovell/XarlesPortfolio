@@ -42,7 +42,7 @@
       gap: 8px;
       color: #e0c9b8;
       text-decoration: none;
-      font-size: 10px;
+      font-size: 13px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       opacity: 0.6;
@@ -50,13 +50,13 @@
       margin-bottom: 20px;
     }
     .back-link:hover { opacity: 1; }
-    .back-link svg { width: 13px; height: 13px; }
+    .back-link svg { width: 18px; height: 18px; }
 
     /* ===== 白板 ===== */
     .board {
       position: relative;
       width: 100%;
-      max-width: 1080px;
+      max-width: 1280px;
       /* 多层叠加：主色 + 磨损边角 + 咖啡渍 + 纸纹 */
       background-color: var(--board);
       background-image:
@@ -109,7 +109,7 @@
       z-index: 2;
     }
     .board-header .en-sub {
-      font-size: 10px;
+      font-size: 12px;
       letter-spacing: 0.32em;
       color: var(--ink-light);
       text-transform: uppercase;
@@ -127,7 +127,7 @@
     .board-header h1 span { color: var(--red); }
     .board-header .meta {
       text-align: right;
-      font-size: 10px;
+      font-size: 12px;
       letter-spacing: 0.16em;
       color: var(--ink-light);
       opacity: 0.5;
@@ -145,7 +145,7 @@
     /* 固定高度，卡片绝对定位在里面 */
     .cards-area {
       position: relative;
-      height: 440px;
+      height: 520px;
       z-index: 2;
     }
 
@@ -169,7 +169,8 @@
     /* ===== 卡片样式：宝丽来相片风格 ===== */
     .case-card {
       position: absolute;
-      width: 172px;
+      width: 200px;
+      /* 卡片宽度已设为200px */
       /* 宝丽来：纯白底色，厚实边框感 */
       background: #ffffff;
       text-decoration: none;
@@ -233,7 +234,7 @@
       background: #ffffff;
     }
     .case-num {
-      font-size: 8px; letter-spacing: 0.22em;
+      font-size: 10px; letter-spacing: 0.22em;
       color: var(--ink-light); text-transform: uppercase;
       opacity: 0.45; margin-bottom: 4px;
     }
@@ -244,7 +245,7 @@
     }
     .case-tag {
       display: inline-block;
-      font-size: 8px; letter-spacing: 0.12em;
+      font-size: 10px; letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--red); border: 1px solid var(--red);
       padding: 2px 5px; opacity: 0.65;
@@ -253,11 +254,11 @@
     /* ===== 卡片位置：横向流动，上下交错 ===== */
     /* 参考图：左→右排列，奇数卡片偏上，偶数偏下，像流水线 */
     /* 间距 ≈ 卡片宽168 + 间隔约36 = 每步~200px */
-    #card-01 { left: 0%;   top: 30px;  transform: rotate(-3deg); animation: cardIn 0.5s ease 0.15s both; }
-    #card-02 { left: 21%;  top: 160px; transform: rotate(2deg);  animation: cardIn 0.5s ease 0.25s both; }
-    #card-03 { left: 42%;  top: 40px;  transform: rotate(-2deg); animation: cardIn 0.5s ease 0.35s both; }
-    #card-04 { left: 63%;  top: 175px; transform: rotate(3.5deg);animation: cardIn 0.5s ease 0.45s both; }
-    #card-05 { left: 81%;  top: 50px;  transform: rotate(-1.5deg);animation: cardIn 0.5s ease 0.55s both; }
+    #card-01 { left: 0%;   top: 40px;  transform: rotate(-3deg); animation: cardIn 0.5s ease 0.15s both; }
+    #card-02 { left: 21%;  top: 200px; transform: rotate(2deg);  animation: cardIn 0.5s ease 0.25s both; }
+    #card-03 { left: 42%;  top: 50px;  transform: rotate(-2deg); animation: cardIn 0.5s ease 0.35s both; }
+    #card-04 { left: 63%;  top: 210px; transform: rotate(3.5deg);animation: cardIn 0.5s ease 0.45s both; }
+    #card-05 { left: 82%;  top: 60px;  transform: rotate(-1.5deg);animation: cardIn 0.5s ease 0.55s both; }
 
     #card-01:hover { transform: rotate(0deg) scale(1.05); }
     #card-02:hover { transform: rotate(0deg) scale(1.05); }
@@ -268,7 +269,7 @@
     /* ===== 旁注 ===== */
     .card-note {
       position: absolute;
-      font-size: 10px;
+      font-size: 12px;
       line-height: 1.6;
       letter-spacing: 0.06em;
       color: var(--ink);
@@ -277,10 +278,10 @@
       z-index: 4;
     }
     /* 放在每张卡片下方或旁边 */
-    #note-01 { left:  1%;  top: 295px; }
-    #note-02 { left: 22%;  top: 368px; }
-    #note-03 { left: 43%;  top: 308px; }
-    #note-04 { left: 64%;  top: 385px; }
+    #note-01 { left:  1%;  top: 345px; }
+    #note-02 { left: 22%;  top: 430px; }
+    #note-03 { left: 43%;  top: 360px; }
+    #note-04 { left: 64%;  top: 445px; }
 
 
     /* ===== 新消息提示（联系页入口）===== */
