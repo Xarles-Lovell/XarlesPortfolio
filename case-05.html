@@ -513,8 +513,8 @@
 
     /* 给卷宗容器的父级加透视 */
 
-    /* 页面切换：简单淡出 */
-    .page-exit {
+    /* 页面切换：简单淡出（只动最上面那张纸） */
+    .dossier.page-exit {
       animation: pageExit 0.3s ease forwards;
       pointer-events: none;
     }
@@ -838,14 +838,18 @@
   </style>
 
   <script>
-    const stack = document.getElementById('dossier-stack');
+    // 清除旧的翻页状态
+    sessionStorage.removeItem('flipDir');
 
-    // ── 导航点击：淡出后跳转 ──
+    const stack = document.getElementById('dossier-stack');
+    const dossier = stack.querySelector('.dossier');
+
+    // ── 导航点击：淡出后跳转（只动最上面那张纸） ──
     document.querySelectorAll('.case-nav a').forEach(link => {
       link.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
         e.preventDefault();
-        stack.classList.add('page-exit');
+        dossier.classList.add('page-exit');
         setTimeout(() => { window.location.href = href; }, 300);
       });
     });
