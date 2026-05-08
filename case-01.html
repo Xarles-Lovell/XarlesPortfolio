@@ -38,11 +38,9 @@
       align-items: center;
     }
 
-    /* ===== 返回 ===== */
+    /* ===== 顶部导航 ===== */
     .top-nav {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
+      position: relative;
       width: 100%;
       max-width: 1020px;
       margin: 0 0 28px 0;
@@ -50,7 +48,7 @@
       animation: fadeDown 0.5s ease both;
     }
     .back-link {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 10px;
       color: var(--paper-alt);
@@ -60,20 +58,22 @@
       letter-spacing: 0.12em;
       opacity: 0.8;
       transition: opacity 0.2s;
-      justify-self: start;
     }
     .back-link:hover { opacity: 1; }
     .back-link svg { width: 20px; height: 20px; }
 
     /* ===== 进度轴 ===== */
     .progress-bar {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       display: flex;
       align-items: center;
       gap: 8px;
       font-family: 'Special Elite', serif;
       font-size: 18px;
       letter-spacing: 0.08em;
-      justify-self: center;
     }
     .prog-item {
       color: var(--paper-alt);
@@ -603,7 +603,6 @@
       <span class="prog-sep">——</span>
       <a href="case-05.html" class="prog-item">case05</a>
     </div>
-    <div></div>
   </div>
 
   <div class="dossier-stack" id="dossier-stack">
