@@ -118,29 +118,34 @@
     .dossier-stack::before {
       top: 10px; bottom: -10px;
       transform: rotate(2.4deg);
-      border: 1.5px solid rgba(30,16,16,0.3);
+      box-shadow: 2px 6px 20px rgba(20,8,8,0.3);
     }
-    /* 第二层底纸 */
+    /* 第二层底纸：偏左下，旋转-1.2度，颜色略浅 */
     .dossier-stack::after {
       top: 14px; bottom: -8px;
       background-color: #ead5bc;
       transform: rotate(-1.8deg);
-      border: 1.5px solid rgba(30,16,16,0.2);
+      box-shadow: 1px 4px 14px rgba(20,8,8,0.22);
     }
 
     /* ===== 主卷宗纸 ===== */
     .dossier {
       width: 100%;
       position: relative;
-      z-index: 2;
+      z-index: 2; /* 高于两层底纸 */
       background-color: var(--paper);
       background-image:
-        radial-gradient(ellipse at 0% 0%,    rgba(30,16,16,0.12) 0%, transparent 30%),
-        radial-gradient(ellipse at 100% 100%, rgba(30,16,16,0.14) 0%, transparent 30%),
-        radial-gradient(ellipse at 100% 0%,   rgba(30,16,16,0.08) 0%, transparent 25%),
-        radial-gradient(ellipse at 0% 100%,   rgba(30,16,16,0.10) 0%, transparent 28%),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
-      border: 3px solid var(--ink);
+        radial-gradient(ellipse at 0% 0%,    rgba(38,23,23,0.10) 0%, transparent 32%),
+        radial-gradient(ellipse at 100% 100%, rgba(38,23,23,0.12) 0%, transparent 32%),
+        radial-gradient(ellipse at 100% 0%,   rgba(38,23,23,0.07) 0%, transparent 28%),
+        radial-gradient(ellipse at 65% 40%,   rgba(139,100,60,0.05) 0%, transparent 16%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.12) inset,
+        -3px 0 8px rgba(38,23,23,0.07) inset,
+        3px 0 8px rgba(38,23,23,0.05) inset,
+        0 12px 40px rgba(20,8,8,0.35),
+        0 4px 10px rgba(0,0,0,0.2);
     }
 
     /* 卷宗左侧装订线 */
@@ -522,7 +527,7 @@
       text-transform: uppercase;
       padding: 14px 34px;
       border: 2px solid var(--ink);
-      transition: all 150ms ease-out;
+      transition: all 0.25s ease;
       position: relative;
       overflow: hidden;
     }
@@ -532,14 +537,14 @@
       inset: 0;
       background: var(--red);
       transform: translateX(-100%);
-      transition: transform 250ms ease-in-out;
+      transition: transform 0.3s ease;
     }
     .nav-btn:hover::before { transform: translateX(0); }
     .nav-btn span { position: relative; z-index: 1; }
     .nav-btn:hover {
       border-color: var(--red);
-      transform: translate(-2px, -2px);
-      box-shadow: 3px 4px 0px var(--ink);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(160,30,30,0.3);
     }
 
     /* ===== 翻纸动效 ===== */
@@ -786,15 +791,23 @@
       align-items: center;
       gap: 14px;
       background: var(--paper);
-      border: 3px solid var(--ink);
+      border: 1.5px solid rgba(30,16,16,0.15);
       padding: 18px 22px;
+      box-shadow:
+        0 6px 28px rgba(10,4,4,0.35),
+        0 2px 8px rgba(0,0,0,0.18),
+        0 0 0 1px rgba(30,16,16,0.06);
       position: relative;
-      transition: all 150ms ease-out;
+      transition: all 0.3s ease;
     }
     .msg-bubble:hover .msg-bubble-inner {
-      transform: translate(-2px, -2px);
-      box-shadow: 3px 4px 0px var(--ink);
-      border-color: var(--red);
+      background: var(--ink);
+      border-color: rgba(160,30,30,0.5);
+      box-shadow:
+        0 0 0 1px rgba(160,30,30,0.15),
+        0 10px 40px rgba(10,4,4,0.65),
+        0 3px 10px rgba(0,0,0,0.4);
+      transform: translateY(-3px);
     }
     /* 未读角标 */
     .msg-unread {
@@ -851,16 +864,19 @@
       color: var(--ink);
       line-height: 1.4;
       white-space: nowrap;
+      transition: color 0.3s;
     }
+    .msg-bubble:hover .msg-preview { color: #e8d8c8; }
     .msg-chevron {
       color: var(--ink-light);
       font-size: 24px;
       flex-shrink: 0;
-      transition: transform 150ms ease-out;
+      transition: color 0.3s, transform 0.2s;
       line-height: 1;
       opacity: 0.4;
     }
     .msg-bubble:hover .msg-chevron {
+      color: rgba(232,216,200,0.8);
       opacity: 1;
       transform: translateX(3px);
     }
